@@ -16,22 +16,20 @@ public class UserValidator : BaseValidator<User>
         _userRepository = unitOfWork.GetRepository<User>();
 
         RuleFor(user => user.Name)
-        .NotNull()
-        .WithMessage("Property 'name' can't be null")
         .NotEmpty()
         .WithMessage("Property 'name' can't be empty.");
 
         RuleFor(user => user.Lastname)
-        .NotNull()
-        .WithMessage("Property 'lastname' can't be null")
         .NotEmpty()
         .WithMessage("Property 'lastname' can't be empty.");
 
         RuleFor(user => user.Email)
-        .NotNull()
-        .WithMessage("Property 'email' can't be null")
-        .NotEmpty()
-        .WithMessage("Property 'email' can't be empty.");
+        .EmailAddress()
+        .WithMessage("Property 'email' has incorrect format.");
+
+        RuleFor(user => user.Password)
+        .MinimumLength(7)
+        .WithMessage("Property 'password' should have 7 characters or more.");
     }
 
 
@@ -41,7 +39,7 @@ public class UserValidator : BaseValidator<User>
 
         if (existUserWithThatEmail)
         {
-            throw new ArgumentException($"Email: {user.Email} is in use");
+            throw new ArgumentException($"Email: {user.Email} is already in use.");
         }
     }
 
@@ -51,7 +49,7 @@ public class UserValidator : BaseValidator<User>
 
         if (existingUser.Email != user.Email)
         {
-            throw new Exception("Email must remain the same");
+            throw new Exception("Email must remain the same.");
         }
     }
 
@@ -61,7 +59,7 @@ public class UserValidator : BaseValidator<User>
 
         if (!existUserWithThatId)
         {
-            throw new ArgumentException($"ID: {id} not found");
+            throw new ArgumentException($"ID: {id} not found.");
         }
     }
 }

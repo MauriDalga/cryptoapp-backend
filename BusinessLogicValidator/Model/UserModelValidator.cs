@@ -10,16 +10,20 @@ public class UserModelValidator : BaseValidator<UserModel>
 {
     public UserModelValidator()
     {
-        base.RuleFor(user => user.Name)
-        .NotNull()
-        .WithMessage("Property 'name' can't be null")
+        RuleFor(user => user.Name)
         .NotEmpty()
         .WithMessage("Property 'name' can't be empty.");
 
-        base.RuleFor(user => user.Email)
-        .NotNull()
-        .WithMessage("Property 'email' can't be null")
+        RuleFor(user => user.Lastname)
         .NotEmpty()
-        .WithMessage("Property 'email' can't be empty.");
+        .WithMessage("Property 'lastname' can't be empty.");
+
+        RuleFor(user => user.Email)
+        .EmailAddress()
+        .WithMessage("Property 'email' has incorrect format.");
+
+        RuleFor(user => user.Password)
+        .MinimumLength(7)
+        .WithMessage("Property 'password' should have 7 characters or more.");
     }
 }
