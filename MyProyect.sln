@@ -29,6 +29,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessLogicValidatorInter
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model", "Model\Model.csproj", "{89F51563-77C0-4BEE-B03D-AEEB1CE93720}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessLogic.Tests", "BusinessLogic.Tests\BusinessLogic.Tests.csproj", "{DF89149D-F821-4D43-8790-769FB7008FAE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessLogicValidator.Tests", "BusinessLogicValidator.Tests\BusinessLogicValidator.Tests.csproj", "{940B0E6C-3DAA-4DA4-B2C1-7EA67BA49EEC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -90,5 +94,13 @@ Global
 		{89F51563-77C0-4BEE-B03D-AEEB1CE93720}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89F51563-77C0-4BEE-B03D-AEEB1CE93720}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89F51563-77C0-4BEE-B03D-AEEB1CE93720}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF89149D-F821-4D43-8790-769FB7008FAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF89149D-F821-4D43-8790-769FB7008FAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF89149D-F821-4D43-8790-769FB7008FAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF89149D-F821-4D43-8790-769FB7008FAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{940B0E6C-3DAA-4DA4-B2C1-7EA67BA49EEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{940B0E6C-3DAA-4DA4-B2C1-7EA67BA49EEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{940B0E6C-3DAA-4DA4-B2C1-7EA67BA49EEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{940B0E6C-3DAA-4DA4-B2C1-7EA67BA49EEC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

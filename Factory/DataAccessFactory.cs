@@ -7,13 +7,17 @@ using DataAccess;
 using DataAccessInterface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Factory;
 internal static class DataAccessFactory
 {
     public static void InjectDataAccess(this IServiceCollection services, string connectionString)
     {
-        services.AddDbContext<DbContext, MyContext>(options =>{
+        connectionString = Environment.GetEnvironmentVariable(connectionString);
+
+        services.AddDbContext<DbContext, MyContext>(options =>
+        {
             options.UseSqlServer(connectionString);
         });
         services.AddTransient<IUnitOfWork, UnitOfWork>();

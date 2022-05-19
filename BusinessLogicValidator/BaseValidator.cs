@@ -52,7 +52,7 @@ public class BaseValidator<TEntity> : AbstractValidator<TEntity>, IBusinessValid
     {
         if (id <= 0)
         {
-            throw new ArgumentException("ID can't be less or equal to 0");
+            throw new ArgumentException("ID can't be less or equal to 0.");
         }
 
         BusinesIdentifierValidation(id);

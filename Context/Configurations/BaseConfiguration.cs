@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Context.Configurations
@@ -16,7 +12,7 @@ namespace Context.Configurations
             ConfigureStartupValues(builder);
         }
 
-        protected abstract void ConfigureProperties(EntityTypeBuilder<T> builder);
+        protected virtual void ConfigureProperties(EntityTypeBuilder<T> builder) { }
         protected virtual void ConfigureRelationShips(EntityTypeBuilder<T> builder) { }
         protected virtual void ConfigureStartupValues(EntityTypeBuilder<T> builder) { }
     }
