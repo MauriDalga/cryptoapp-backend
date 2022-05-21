@@ -46,7 +46,7 @@ namespace BusinessLogic.Tests
             userValidatorMock.VerifyAll();
             userRepositoryMock.VerifyAll();
             userUnitOfWorkMock.VerifyAll();
-            Assert.AreEqual("Martin", returnedUser.Name);
+            Assert.AreEqual("John", returnedUser.Name);
         }
 
         [TestMethod]
@@ -67,7 +67,7 @@ namespace BusinessLogic.Tests
             userValidatorMock.VerifyAll();
             userRepositoryMock.VerifyAll();
             userUnitOfWorkMock.VerifyAll();
-            Assert.AreEqual("Martin", returnedUser.Name);
+            Assert.AreEqual("John", returnedUser.Name);
         }
 
         [TestMethod]
@@ -128,7 +128,7 @@ namespace BusinessLogic.Tests
             userValidatorMock.VerifyAll();
             userRepositoryMock.VerifyAll();
             userUnitOfWorkMock.VerifyAll();
-            Assert.AreEqual("Martin", returnedUsers.First().Name);
+            Assert.AreEqual("John", returnedUsers.First().Name);
         }
     }
 }

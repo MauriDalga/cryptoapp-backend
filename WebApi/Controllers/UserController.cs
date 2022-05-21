@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BusinessLogicAdapter;
 using Microsoft.AspNetCore.Mvc;
+using Model.Read;
 using Model.Write;
 using WebApi.Filters;
 
@@ -42,7 +43,7 @@ namespace WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult Get()
         {
-            var users = _userLogicAdapter.GetCollection();
+            IEnumerable<UserBasicModel> users = _userLogicAdapter.GetCollection();
 
             return Ok(users);
         }
@@ -54,7 +55,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var user = _userLogicAdapter.Get(id);
+                UserDetailInfoModel user = _userLogicAdapter.Get(id);
 
                 return Ok(user);
             }
@@ -71,7 +72,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var userCreated = _userLogicAdapter.Create(user);
+                UserDetailInfoModel userCreated = _userLogicAdapter.Create(user);
             
                 return CreatedAtRoute("GetUserById", new { id = userCreated.Id }, userCreated);
             }
