@@ -7,7 +7,6 @@ using Domain;
 using Model.Read;
 using Model.Write;
 using Xunit;
-using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace WebApi.Tests;
 
@@ -45,10 +44,10 @@ public class UserControllerTest : BaseIntegrationTest
 
         var response = await HttpClient.GetAsync($"users/{_testUserEntity.Id}");
 
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var responseUser = await response.Content.ReadFromJsonAsync<UserDetailInfoModel>();
-        Assert.IsNotNull(responseUser);
-        Assert.AreEqual(_testUserModel, responseUser);
+        Assert.NotNull(responseUser);
+        Assert.Equal(_testUserModel, responseUser);
     }
 
     [Fact]
@@ -56,8 +55,8 @@ public class UserControllerTest : BaseIntegrationTest
     {
         var response = await HttpClient.GetAsync($"users/{1}");
 
-        Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
-        Assert.AreEqual("ID: 1 not found.", (await response.Content.ReadAsStringAsync()));
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        Assert.Equal("ID: 1 not found.", (await response.Content.ReadAsStringAsync()));
     }
 
     [Fact]
@@ -73,11 +72,11 @@ public class UserControllerTest : BaseIntegrationTest
 
         var response = await HttpClient.PostAsync("users", TestUtils.GetJsonHttpContentFrom(userModel));
 
-        Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
         var responseUser = await response.Content.ReadFromJsonAsync<UserDetailInfoModel>();
-        Assert.IsNotNull(responseUser);
-        Assert.AreEqual(_testUserModel, responseUser);
-        Assert.AreEqual(1, Context.Users.Count());
+        Assert.NotNull(responseUser);
+        Assert.Equal(_testUserModel, responseUser);
+        Assert.Equal(1, Context.Users.Count());
     }
 
     [Fact]
@@ -93,8 +92,8 @@ public class UserControllerTest : BaseIntegrationTest
 
         var response = await HttpClient.PostAsync("users", TestUtils.GetJsonHttpContentFrom(userModel));
 
-        Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        Assert.AreEqual(expectedErrorMsg, (await response.Content.ReadAsStringAsync()));
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.Equal(expectedErrorMsg, (await response.Content.ReadAsStringAsync()));
     }
 
     [Fact]
@@ -112,8 +111,8 @@ public class UserControllerTest : BaseIntegrationTest
 
         var response = await HttpClient.PutAsync($"users/{1}", TestUtils.GetJsonHttpContentFrom(userModel));
 
-        Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        Assert.AreEqual(expectedErrorMsg, (await response.Content.ReadAsStringAsync()));
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.Equal(expectedErrorMsg, (await response.Content.ReadAsStringAsync()));
     }
 
     [Fact]
@@ -129,8 +128,8 @@ public class UserControllerTest : BaseIntegrationTest
 
         var response = await HttpClient.PutAsync($"users/{1}", TestUtils.GetJsonHttpContentFrom(userModel));
 
-        Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
-        Assert.AreEqual("ID: 1 not found.", (await response.Content.ReadAsStringAsync()));
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        Assert.Equal("ID: 1 not found.", (await response.Content.ReadAsStringAsync()));
     }
 
     [Fact]
@@ -140,8 +139,8 @@ public class UserControllerTest : BaseIntegrationTest
         await Context.SaveChangesAsync();
         var response = await HttpClient.DeleteAsync($"users/{1}");
 
-        Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
-        Assert.IsFalse(Context.Users.AsEnumerable().Any());
+        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        Assert.False(Context.Users.AsEnumerable().Any());
     }
 
     [Fact]
@@ -149,8 +148,8 @@ public class UserControllerTest : BaseIntegrationTest
     {
         var response = await HttpClient.DeleteAsync($"users/{5}");
 
-        Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
-        Assert.AreEqual("ID: 5 not found.", (await response.Content.ReadAsStringAsync()));
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        Assert.Equal("ID: 5 not found.", (await response.Content.ReadAsStringAsync()));
     }
 
     [Fact]
@@ -173,10 +172,10 @@ public class UserControllerTest : BaseIntegrationTest
 
         var response = await HttpClient.GetAsync($"users/{1}/coin-accounts");
 
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var responseCoinAccounts = await response.Content.ReadFromJsonAsync<IEnumerable<CoinAccountModel>>();
-        Assert.IsNotNull(responseCoinAccounts);
-        Assert.AreEqual(2, responseCoinAccounts.Count());
+        Assert.NotNull(responseCoinAccounts);
+        Assert.Equal(2, responseCoinAccounts!.Count());
     }
 
     [Fact]
@@ -184,7 +183,7 @@ public class UserControllerTest : BaseIntegrationTest
     {
         var response = await HttpClient.GetAsync($"users/{1}/coin-accounts");
 
-        Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
-        Assert.IsTrue((await response.Content.ReadAsStringAsync()).Contains("ID: 1 not found"));
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        Assert.Contains("ID: 1 not found", (await response.Content.ReadAsStringAsync()));
     }
 }
