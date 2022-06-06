@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using DataAccessInterface;
+﻿using DataAccessInterface;
 
 namespace BusinessLogic;
-public class BaseLogic
-{
-    protected readonly IUnitOfWork _unitOfWork;
 
-    public BaseLogic(IUnitOfWork unitOfWork)
+public abstract class BaseLogic
+{
+    protected BaseLogic(IUnitOfWork unitOfWork)
     {
-        _unitOfWork = unitOfWork;
     }
 }

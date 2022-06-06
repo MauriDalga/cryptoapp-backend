@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using BusinessLogic;
 using BusinessLogicValidatorInterface;
 using Domain;
@@ -10,15 +6,16 @@ using Model.Read;
 using Model.Write;
 
 namespace BusinessLogicAdapter;
+
 public class UserLogicAdapter : BaseLogicAdapter
 {
     private readonly UserLogic _userLogic;
     private readonly IBusinessValidator<UserModel> _userModelValidator;
 
     public UserLogicAdapter(
-        UserLogic userLogic, 
+        UserLogic userLogic,
         IBusinessValidator<UserModel> userModelValidator,
-        IMapper mapper) : base (mapper)
+        IMapper mapper) : base(mapper)
     {
         _userLogic = userLogic;
         _userModelValidator = userModelValidator;
@@ -54,13 +51,6 @@ public class UserLogicAdapter : BaseLogicAdapter
         _userLogic.Edit(id, userEntity);
     }
 
-    public IEnumerable<UserBasicModel> GetCollection()
-    {
-        var users = _userLogic.GetCollection();
-
-        return _mapper.Map<IEnumerable<UserBasicModel>>(users);
-    }
-
     public UserDetailInfoModel Get(int id)
     {
         _userModelValidator.ValidateIdentifier(id);
@@ -68,5 +58,14 @@ public class UserLogicAdapter : BaseLogicAdapter
         var user = _userLogic.Get(id);
 
         return _mapper.Map<UserDetailInfoModel>(user);
+    }
+
+    public virtual IEnumerable<CoinAccountModel> GetAccountsFromUser(int userId)
+    {
+        _userModelValidator.ValidateIdentifier(userId);
+
+        var coinAccountEntities = _userLogic.GetAccountsFromUser(userId);
+
+        return _mapper.Map<IEnumerable<CoinAccount>,IEnumerable<CoinAccountModel>>(coinAccountEntities);
     }
 }

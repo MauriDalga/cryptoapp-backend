@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using BusinessLogicAdapter;
+﻿using BusinessLogicAdapter;
 using Microsoft.AspNetCore.Mvc;
 using Model.Read;
 using Model.Write;
-using WebApi.Filters;
 
 [assembly: ApiController]
 namespace WebApi.Controllers
@@ -33,19 +28,10 @@ namespace WebApi.Controllers
                 _userLogicAdapter.Delete(id);
                 return NoContent();
             }
-            catch (ArgumentException)
+            catch (KeyNotFoundException err)
             {
-                return NotFound();
+                return NotFound(err.Message);
             }
-        }
-
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult Get()
-        {
-            IEnumerable<UserBasicModel> users = _userLogicAdapter.GetCollection();
-
-            return Ok(users);
         }
 
         [HttpGet("{id}", Name = "GetUserById")]
@@ -59,7 +45,7 @@ namespace WebApi.Controllers
 
                 return Ok(user);
             }
-            catch (ArgumentException err)
+            catch (KeyNotFoundException err)
             {
                 return NotFound(err.Message);
             }
@@ -94,13 +80,31 @@ namespace WebApi.Controllers
 
                 return NoContent();
             }
-            catch (ArgumentException err)
+            catch (KeyNotFoundException err)
             {
                 return NotFound(err.Message);
             }
-            catch (Exception err)
+            catch (ArgumentException err)
             {
                 return BadRequest(err.Message);
+            }
+        }
+        
+        [Route("{id}/coin-accounts")]
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult GetAccountsFromUser([FromRoute] int id)
+        {
+            try
+            {
+                var coinAccounts = _userLogicAdapter.GetAccountsFromUser(id);
+
+                return Ok(coinAccounts);
+            }
+            catch (KeyNotFoundException err)
+            {
+                return NotFound(err.Message);
             }
         }
     }

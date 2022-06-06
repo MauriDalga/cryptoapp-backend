@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using BusinessLogicValidator.Entities;
 using DataAccessInterface;
@@ -323,7 +324,7 @@ namespace BusinessLogicValidator.Tests
             {
                 userValidator.ValidateIdentifier(1234);
             }
-            catch (ArgumentException exception)
+            catch (KeyNotFoundException exception)
             {
                 errorMessage = exception.Message;
             }

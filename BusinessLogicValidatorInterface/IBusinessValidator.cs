@@ -1,5 +1,6 @@
 ﻿namespace BusinessLogicValidatorInterface;
-public interface IBusinessValidator<TEntity> where TEntity : class
+
+public interface IBusinessValidator<in TEntity> where TEntity : class
 {
     void CreationValidation(TEntity entity);
     void EditionValidation(int id, TEntity entity);

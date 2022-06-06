@@ -1,247 +1,87 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using AutoMapper;
-using BusinessLogic;
-using BusinessLogicAdapter;
-using BusinessLogicValidatorInterface;
-using DataAccessInterface;
+using System.Net;
+using System.Net.Http.Json;
+using System.Threading.Tasks;
 using Domain;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Model.Read;
 using Model.Write;
-using Moq;
-using WebApi.Controllers;
+using Xunit;
+using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace WebApi.Tests;
 
-[TestClass]
-public class UserControllerTest
+public class UserControllerTest : BaseIntegrationTest
 {
-    [TestMethod]
-    public void TestGetAllUsersOk()
+    private readonly User _testUserEntity = new()
     {
-        User user1 = new()
+        Id = 1,
+        Name = "John",
+        Lastname = "Doe",
+        Email = "john.doe@test.com",
+        Password = "test_password1"
+    };
+
+    private readonly UserDetailInfoModel _testUserModel = new()
+    {
+        Id = 1,
+        Name = "John",
+        Lastname = "Doe",
+        Email = "john.doe@test.com"
+    };
+
+    public UserControllerTest(TestingWebAppFactory<Program> factory) : base(factory)
+    {
+        Context.Users.RemoveRange(Context.Users);
+        Context.CoinAccounts.RemoveRange(Context.CoinAccounts);
+        Context.SaveChanges();
+    }
+
+    [Fact]
+    public async Task TestGetByIdUserOk()
+    {
+        Context.Users.Add(_testUserEntity);
+        await Context.SaveChangesAsync();
+
+        var response = await HttpClient.GetAsync($"users/{_testUserEntity.Id}");
+
+        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        var responseUser = await response.Content.ReadFromJsonAsync<UserDetailInfoModel>();
+        Assert.IsNotNull(responseUser);
+        Assert.AreEqual(_testUserModel, responseUser);
+    }
+
+    [Fact]
+    public async Task TestGetByIdUserNotFound()
+    {
+        var response = await HttpClient.GetAsync($"users/{1}");
+
+        Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
+        Assert.AreEqual("ID: 1 not found.", (await response.Content.ReadAsStringAsync()));
+    }
+
+    [Fact]
+    public async Task TestPostUserOk()
+    {
+        UserModel userModel = new()
         {
-            Id = 1,
             Name = "John",
             Lastname = "Doe",
             Email = "john.doe@test.com",
             Password = "test_password"
         };
 
-        User user2 = new()
-        {
-            Id = 2,
-            Name = "Doe",
-            Lastname = "John",
-            Email = "john.doe@test.com",
-            Password = "test_password"
-        };
+        var response = await HttpClient.PostAsync("users", TestUtils.GetJsonHttpContentFrom(userModel));
 
-        List<User> returnedUsers = new() { user1, user2 };
-        IEnumerable<UserBasicModel> users = returnedUsers.Select(m => new UserBasicModel(m));
-
-        var userValidatorMock = new Mock<IBusinessValidator<User>>(MockBehavior.Strict);
-        var userModelValidatorMock = new Mock<IBusinessValidator<UserModel>>(MockBehavior.Strict);
-
-        var userRepositoryMock = new Mock<IRepository<User>>(MockBehavior.Strict);
-        userRepositoryMock.Setup(m => m.GetCollection(null, null, null, null)).Returns(returnedUsers);
-
-        var mapperMock = new Mock<IMapper>(MockBehavior.Strict);
-        mapperMock.Setup(m => m.Map<IEnumerable<UserBasicModel>>(It.IsAny<object>())).Returns(users);
-
-        var userUnitOfWorkMock = new Mock<IUnitOfWork>(MockBehavior.Strict);
-        userUnitOfWorkMock.Setup(m => m.GetRepository<User>()).Returns(userRepositoryMock.Object);
-
-        UserLogic userLogic = new(userValidatorMock.Object, userUnitOfWorkMock.Object);
-        UserLogicAdapter userLogicAdapter = new(userLogic, userModelValidatorMock.Object, mapperMock.Object);
-
-        var controller = new UserController(userLogicAdapter);
-
-        var result = controller.Get();
-        var okResult = result as OkObjectResult;
-        IEnumerable<UserBasicModel> getUsers = okResult.Value as IEnumerable<UserBasicModel>;
-
-        userValidatorMock.VerifyAll();
-        userModelValidatorMock.VerifyAll();
-        userRepositoryMock.VerifyAll();
-        mapperMock.VerifyAll();
-        userUnitOfWorkMock.VerifyAll();
-
-        Assert.IsTrue(users.SequenceEqual(getUsers));
+        Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
+        var responseUser = await response.Content.ReadFromJsonAsync<UserDetailInfoModel>();
+        Assert.IsNotNull(responseUser);
+        Assert.AreEqual(_testUserModel, responseUser);
+        Assert.AreEqual(1, Context.Users.Count());
     }
 
-    [TestMethod]
-    public void TestEmptyGetAllUsersOk()
-    {
-        List<User> returnedUsers = new();
-
-        IEnumerable<UserBasicModel> users = returnedUsers.Select(m => new UserBasicModel(m));
-
-        var userValidatorMock = new Mock<IBusinessValidator<User>>(MockBehavior.Strict);
-        var userModelValidatorMock = new Mock<IBusinessValidator<UserModel>>(MockBehavior.Strict);
-
-        var userRepositoryMock = new Mock<IRepository<User>>(MockBehavior.Strict);
-        userRepositoryMock.Setup(m => m.GetCollection(null, null, null, null)).Returns(returnedUsers);
-
-        var mapperMock = new Mock<IMapper>(MockBehavior.Strict);
-        mapperMock.Setup(m => m.Map<IEnumerable<UserBasicModel>>(It.IsAny<object>())).Returns(users);
-
-        var userUnitOfWorkMock = new Mock<IUnitOfWork>(MockBehavior.Strict);
-        userUnitOfWorkMock.Setup(m => m.GetRepository<User>()).Returns(userRepositoryMock.Object);
-
-        UserLogic userLogic = new(userValidatorMock.Object, userUnitOfWorkMock.Object);
-        UserLogicAdapter userLogicAdapter = new(userLogic, userModelValidatorMock.Object, mapperMock.Object);
-
-        var controller = new UserController(userLogicAdapter);
-
-        var result = controller.Get();
-        var okResult = result as OkObjectResult;
-        IEnumerable<UserBasicModel> getUsers = okResult.Value as IEnumerable<UserBasicModel>;
-
-        userValidatorMock.VerifyAll();
-        userModelValidatorMock.VerifyAll();
-        userRepositoryMock.VerifyAll();
-        mapperMock.VerifyAll();
-        userUnitOfWorkMock.VerifyAll();
-
-        Assert.IsTrue(users.SequenceEqual(getUsers));
-    }
-
-    [TestMethod]
-    public void TestGetByIdUserOk()
-    {
-        int userId = 1;
-
-        User returnedUser = new()
-        {
-            Id = 1,
-            Name = "John",
-            Lastname = "Doe",
-            Email = "john.doe@test.com",
-            Password = "Password_1",
-        };
-
-        var userValidatorMock = new Mock<IBusinessValidator<User>>(MockBehavior.Strict);
-        userValidatorMock.Setup(m => m.ValidateIdentifier(1));
-
-        var userModelValidatorMock = new Mock<IBusinessValidator<UserModel>>(MockBehavior.Strict);
-        userModelValidatorMock.Setup(m => m.ValidateIdentifier(1));
-
-        var userRepositoryMock = new Mock<IRepository<User>>(MockBehavior.Strict);
-        userRepositoryMock.Setup(m => m.Get(It.IsAny<Expression<Func<User, bool>>>(), null, null, false)).Returns(returnedUser);
-
-        var mapperMock = new Mock<IMapper>(MockBehavior.Strict);
-        mapperMock.Setup(m => m.Map<UserDetailInfoModel>(It.IsAny<object>())).Returns(new UserDetailInfoModel(returnedUser));
-
-        var userUnitOfWorkMock = new Mock<IUnitOfWork>(MockBehavior.Strict);
-        userUnitOfWorkMock.Setup(m => m.GetRepository<User>()).Returns(userRepositoryMock.Object);
-
-        UserLogic userLogic = new(userValidatorMock.Object, userUnitOfWorkMock.Object);
-        UserLogicAdapter userLogicAdapter = new(userLogic, userModelValidatorMock.Object, mapperMock.Object);
-
-        var controller = new UserController(userLogicAdapter);
-
-        var result = controller.Get(userId);
-        var okResult = result as OkObjectResult;
-        UserDetailInfoModel user = okResult.Value as UserDetailInfoModel;
-
-        userValidatorMock.VerifyAll();
-        userModelValidatorMock.VerifyAll();
-        userRepositoryMock.VerifyAll();
-        mapperMock.VerifyAll();
-        userUnitOfWorkMock.VerifyAll();
-
-        Assert.IsTrue(new UserDetailInfoModel(returnedUser).Equals(user));
-    }
-
-    [TestMethod]
-    public void TestGetByIdUserNotFound()
-    {
-        var userValidatorMock = new Mock<IBusinessValidator<User>>(MockBehavior.Strict);
-        var userRepositoryMock = new Mock<IRepository<User>>(MockBehavior.Strict);
-        var mapperMock = new Mock<IMapper>(MockBehavior.Strict);
-
-        var userModelValidatorMock = new Mock<IBusinessValidator<UserModel>>(MockBehavior.Strict);
-        userModelValidatorMock.Setup(m => m.ValidateIdentifier(1)).Throws(new ArgumentException());
-
-        var userUnitOfWorkMock = new Mock<IUnitOfWork>(MockBehavior.Strict);
-        userUnitOfWorkMock.Setup(m => m.GetRepository<User>()).Returns(userRepositoryMock.Object);
-
-        UserLogic userLogic = new(userValidatorMock.Object, userUnitOfWorkMock.Object);
-        UserLogicAdapter userLogicAdapter = new(userLogic, userModelValidatorMock.Object, mapperMock.Object);
-
-        var controller = new UserController(userLogicAdapter);
-        var result = controller.Get(1);
-        
-        userValidatorMock.VerifyAll();
-        userModelValidatorMock.VerifyAll();
-        userRepositoryMock.VerifyAll();
-        mapperMock.VerifyAll();
-        userUnitOfWorkMock.VerifyAll();
-
-        Assert.IsInstanceOfType(result, typeof(NotFoundObjectResult));
-    }
-
-    [TestMethod]
-    public void TestPostUserOk()
-    {
-        UserModel userModel = new()
-        {
-            Name = "John",
-            Lastname = "Doe",
-            Email = "john.doe@test.com",
-            Password = "Password_1",
-        };
-
-        User userToReturn = new()
-        {
-            Id = 1,
-            Name = "John",
-            Lastname = "Doe",
-            Email = "john.doe@test.com",
-            Password = "Password_1",
-        };
-
-        var userValidatorMock = new Mock<IBusinessValidator<User>>(MockBehavior.Strict);
-        userValidatorMock.Setup(m => m.CreationValidation(userToReturn));
-
-        var userModelValidatorMock = new Mock<IBusinessValidator<UserModel>>(MockBehavior.Strict);
-        userModelValidatorMock.Setup(m => m.CreationValidation(userModel));
-
-        var userRepositoryMock = new Mock<IRepository<User>>(MockBehavior.Strict);
-        userRepositoryMock.Setup(m => m.InsertAndSave(userToReturn));
-
-        var mapperMock = new Mock<IMapper>(MockBehavior.Strict);
-        mapperMock.Setup(m => m.Map<User>(It.IsAny<object>())).Returns(userToReturn);
-        mapperMock.Setup(m => m.Map<UserDetailInfoModel>(It.IsAny<object>())).Returns(new UserDetailInfoModel(userToReturn));
-
-        var userUnitOfWorkMock = new Mock<IUnitOfWork>(MockBehavior.Strict);
-        userUnitOfWorkMock.Setup(m => m.GetRepository<User>()).Returns(userRepositoryMock.Object);
-
-        UserLogic userLogic = new(userValidatorMock.Object, userUnitOfWorkMock.Object);
-        UserLogicAdapter userLogicAdapter = new(userLogic, userModelValidatorMock.Object, mapperMock.Object);
-
-        var controller = new UserController(userLogicAdapter);
-
-        var result = controller.Post(userModel);
-        var okResult = result as CreatedAtRouteResult;
-        UserDetailInfoModel user = okResult.Value as UserDetailInfoModel;
-
-        userValidatorMock.VerifyAll();
-        userModelValidatorMock.VerifyAll();
-        userRepositoryMock.VerifyAll();
-        mapperMock.VerifyAll();
-        userUnitOfWorkMock.VerifyAll();
-
-        Assert.AreEqual(user, new UserDetailInfoModel(userToReturn));
-    }
-
-    [TestMethod]
-    public void TestPostInvalidUser()
+    [Fact]
+    public async Task TestPostInvalidUser()
     {
         UserModel userModel = new()
         {
@@ -249,41 +89,35 @@ public class UserControllerTest
             Email = "user_1@gmail.com",
             Password = "Password_1",
         };
+        const string expectedErrorMsg = "Property 'name' can't be empty. \n Property 'lastname' can't be empty.";
 
-        User user = new()
+        var response = await HttpClient.PostAsync("users", TestUtils.GetJsonHttpContentFrom(userModel));
+
+        Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.AreEqual(expectedErrorMsg, (await response.Content.ReadAsStringAsync()));
+    }
+
+    [Fact]
+    public async Task TestPutInvalidUser()
+    {
+        Context.Users.Add(_testUserEntity);
+        await Context.SaveChangesAsync();
+        UserModel userModel = new()
         {
             Name = "",
             Email = "user_1@gmail.com",
             Password = "Password_1",
         };
+        const string expectedErrorMsg = "Property 'name' can't be empty. \n Property 'lastname' can't be empty.";
 
-        var userValidatorMock = new Mock<IBusinessValidator<User>>(MockBehavior.Strict);
-        var userRepositoryMock = new Mock<IRepository<User>>(MockBehavior.Strict);
-        var mapperMock = new Mock<IMapper>(MockBehavior.Strict);
+        var response = await HttpClient.PutAsync($"users/{1}", TestUtils.GetJsonHttpContentFrom(userModel));
 
-        var userModelValidatorMock = new Mock<IBusinessValidator<UserModel>>(MockBehavior.Strict);
-        userModelValidatorMock.Setup(m => m.CreationValidation(userModel)).Throws(new ArgumentException());
-
-        var userUnitOfWorkMock = new Mock<IUnitOfWork>(MockBehavior.Strict);
-        userUnitOfWorkMock.Setup(m => m.GetRepository<User>()).Returns(userRepositoryMock.Object);
-
-        UserLogic userLogic = new(userValidatorMock.Object, userUnitOfWorkMock.Object);
-        UserLogicAdapter userLogicAdapter = new(userLogic, userModelValidatorMock.Object, mapperMock.Object);
-
-        var controller = new UserController(userLogicAdapter);
-        var result = controller.Post(userModel);
-
-        userValidatorMock.VerifyAll();
-        userModelValidatorMock.VerifyAll();
-        userRepositoryMock.VerifyAll();
-        mapperMock.VerifyAll();
-        userUnitOfWorkMock.VerifyAll();
-
-        Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
+        Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.AreEqual(expectedErrorMsg, (await response.Content.ReadAsStringAsync()));
     }
 
-    [TestMethod]
-    public void TestPutUserOk()
+    [Fact]
+    public async Task TestPutUserNotFound()
     {
         UserModel userModel = new()
         {
@@ -293,182 +127,64 @@ public class UserControllerTest
             Password = "Password_1",
         };
 
-        User userToReturn = new()
-        {
-            Id = 1,
-            Name = "John",
-            Lastname = "Dos",
-            Email = "john.doe@test.com",
-            Password = "Password_1",
-        };
+        var response = await HttpClient.PutAsync($"users/{1}", TestUtils.GetJsonHttpContentFrom(userModel));
 
-        var userValidatorMock = new Mock<IBusinessValidator<User>>(MockBehavior.Strict);
-        userValidatorMock.Setup(m => m.ValidateIdentifier(1));
-        userValidatorMock.Setup(m => m.EditionValidation(1, userToReturn));
-
-        var userModelValidatorMock = new Mock<IBusinessValidator<UserModel>>(MockBehavior.Strict);
-        userModelValidatorMock.Setup(m => m.ValidateIdentifier(1));
-        userModelValidatorMock.Setup(m => m.EditionValidation(1, userModel));
-
-        var userRepositoryMock = new Mock<IRepository<User>>(MockBehavior.Strict);
-        userRepositoryMock.Setup(m => m.UpdateAndSave(userToReturn));
-
-        var mapperMock = new Mock<IMapper>(MockBehavior.Strict);
-        mapperMock.Setup(m => m.Map<User>(It.IsAny<object>())).Returns(userToReturn);
-
-        var userUnitOfWorkMock = new Mock<IUnitOfWork>(MockBehavior.Strict);
-        userUnitOfWorkMock.Setup(m => m.GetRepository<User>()).Returns(userRepositoryMock.Object);
-
-        UserLogic userLogic = new(userValidatorMock.Object, userUnitOfWorkMock.Object);
-        UserLogicAdapter userLogicAdapter = new(userLogic, userModelValidatorMock.Object, mapperMock.Object);
-
-        var controller = new UserController(userLogicAdapter);
-        var result = controller.Put(1, userModel);
-
-        userValidatorMock.VerifyAll();
-        userModelValidatorMock.VerifyAll();
-        userRepositoryMock.VerifyAll();
-        mapperMock.VerifyAll();
-        userUnitOfWorkMock.VerifyAll();
-
-        Assert.IsInstanceOfType(result, typeof(NoContentResult));
+        Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
+        Assert.AreEqual("ID: 1 not found.", (await response.Content.ReadAsStringAsync()));
     }
 
-    [TestMethod]
-    public void TestPutInvalidUser()
+    [Fact]
+    public async Task TestDeleteUserOk()
     {
-        UserModel userModel = new()
-        {
-            Name = "",
-            Email = "user_1@gmail.com",
-            Password = "Password_1",
-        };
+        Context.Users.Add(_testUserEntity);
+        await Context.SaveChangesAsync();
+        var response = await HttpClient.DeleteAsync($"users/{1}");
 
-        var userValidatorMock = new Mock<IBusinessValidator<User>>(MockBehavior.Strict);
-
-        var userModelValidatorMock = new Mock<IBusinessValidator<UserModel>>(MockBehavior.Strict);
-        userModelValidatorMock.Setup(m => m.ValidateIdentifier(1));
-        userModelValidatorMock.Setup(m => m.EditionValidation(1, userModel)).Throws(new ArgumentException());
-
-        var userRepositoryMock = new Mock<IRepository<User>>(MockBehavior.Strict);
-
-        var mapperMock = new Mock<IMapper>(MockBehavior.Strict);
-
-        var userUnitOfWorkMock = new Mock<IUnitOfWork>(MockBehavior.Strict);
-        userUnitOfWorkMock.Setup(m => m.GetRepository<User>()).Returns(userRepositoryMock.Object);
-
-        UserLogic userLogic = new(userValidatorMock.Object, userUnitOfWorkMock.Object);
-        UserLogicAdapter userLogicAdapter = new(userLogic, userModelValidatorMock.Object, mapperMock.Object);
-
-        var controller = new UserController(userLogicAdapter);
-        var result = controller.Put(1, userModel);
-
-        userValidatorMock.VerifyAll();
-        userModelValidatorMock.VerifyAll();
-        userRepositoryMock.VerifyAll();
-        mapperMock.VerifyAll();
-        userUnitOfWorkMock.VerifyAll();
-
-        Assert.IsInstanceOfType(result, typeof(NotFoundObjectResult));
+        Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
+        Assert.IsFalse(Context.Users.AsEnumerable().Any());
     }
 
-    [TestMethod]
-    public void TestPutUserNotFound()
+    [Fact]
+    public async Task TestDeleteUserNotFound()
     {
-        UserModel userModel = new()
-        {
-            Name = "John",
-            Lastname = "Doe",
-            Email = "john.doe@test.com",
-            Password = "Password_1",
-        };
+        var response = await HttpClient.DeleteAsync($"users/{5}");
 
-        var userValidatorMock = new Mock<IBusinessValidator<User>>(MockBehavior.Strict);
-
-        var userModelValidatorMock = new Mock<IBusinessValidator<UserModel>>(MockBehavior.Strict);
-        userModelValidatorMock.Setup(m => m.ValidateIdentifier(1111)).Throws(new ArgumentException());
-
-        var userRepositoryMock = new Mock<IRepository<User>>(MockBehavior.Strict);
-
-        var mapperMock = new Mock<IMapper>(MockBehavior.Strict);
-
-        var userUnitOfWorkMock = new Mock<IUnitOfWork>(MockBehavior.Strict);
-        userUnitOfWorkMock.Setup(m => m.GetRepository<User>()).Returns(userRepositoryMock.Object);
-
-        UserLogic userLogic = new(userValidatorMock.Object, userUnitOfWorkMock.Object);
-        UserLogicAdapter userLogicAdapter = new(userLogic, userModelValidatorMock.Object, mapperMock.Object);
-
-        var controller = new UserController(userLogicAdapter);
-        var result = controller.Put(1111, userModel);
-
-        userValidatorMock.VerifyAll();
-        userModelValidatorMock.VerifyAll();
-        userRepositoryMock.VerifyAll();
-        mapperMock.VerifyAll();
-        userUnitOfWorkMock.VerifyAll();
-
-        Assert.IsInstanceOfType(result, typeof(NotFoundObjectResult));
+        Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
+        Assert.AreEqual("ID: 5 not found.", (await response.Content.ReadAsStringAsync()));
     }
 
-    [TestMethod]
-    public void TestDeleteUserOk()
+    [Fact]
+    public async Task TestGetAccountsFromUserOk()
     {
-        var userValidatorMock = new Mock<IBusinessValidator<User>>(MockBehavior.Strict);
-        userValidatorMock.Setup(m => m.ValidateIdentifier(1));
+        await Context.Users.AddAsync(_testUserEntity);
+        await Context.CoinAccounts.AddRangeAsync(new CoinAccount
+            {
+                CoinId = 1,
+                Balance = 10,
+                UserId = 1
+            },
+            new CoinAccount
+            {
+                CoinId = 2,
+                Balance = 10,
+                UserId = 1
+            });
+        await Context.SaveChangesAsync();
 
-        var userModelValidatorMock = new Mock<IBusinessValidator<UserModel>>(MockBehavior.Strict);
-        userModelValidatorMock.Setup(m => m.ValidateIdentifier(1));
+        var response = await HttpClient.GetAsync($"users/{1}/coin-accounts");
 
-        var userRepositoryMock = new Mock<IRepository<User>>(MockBehavior.Strict);
-        userRepositoryMock.Setup(m => m.DeleteByIdAndSave(1));
-
-        var mapperMock = new Mock<IMapper>(MockBehavior.Strict);
-
-        var userUnitOfWorkMock = new Mock<IUnitOfWork>(MockBehavior.Strict);
-        userUnitOfWorkMock.Setup(m => m.GetRepository<User>()).Returns(userRepositoryMock.Object);
-
-        UserLogic userLogic = new(userValidatorMock.Object, userUnitOfWorkMock.Object);
-        UserLogicAdapter userLogicAdapter = new(userLogic, userModelValidatorMock.Object, mapperMock.Object);
-
-        var controller = new UserController(userLogicAdapter);
-        var result = controller.Delete(1);
-
-        userValidatorMock.VerifyAll();
-        userModelValidatorMock.VerifyAll();
-        userRepositoryMock.VerifyAll();
-        mapperMock.VerifyAll();
-        userUnitOfWorkMock.VerifyAll();
-
-        Assert.IsInstanceOfType(result, typeof(NoContentResult));
+        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        var responseCoinAccounts = await response.Content.ReadFromJsonAsync<IEnumerable<CoinAccountModel>>();
+        Assert.IsNotNull(responseCoinAccounts);
+        Assert.AreEqual(2, responseCoinAccounts.Count());
     }
 
-    [TestMethod]
-    public void TestDeleteUserNotFound()
+    [Fact]
+    public async Task TestGetAccountsFromUserNotFound()
     {
-        var userValidatorMock = new Mock<IBusinessValidator<User>>(MockBehavior.Strict);
-        userValidatorMock.Setup(m => m.ValidateIdentifier(1)).Throws(new ArgumentException());
+        var response = await HttpClient.GetAsync($"users/{1}/coin-accounts");
 
-        var userModelValidatorMock = new Mock<IBusinessValidator<UserModel>>(MockBehavior.Strict);
-        userModelValidatorMock.Setup(m => m.ValidateIdentifier(1));
-
-        var userRepositoryMock = new Mock<IRepository<User>>(MockBehavior.Strict);
-        var mapperMock = new Mock<IMapper>(MockBehavior.Strict);
-
-        var userUnitOfWorkMock = new Mock<IUnitOfWork>(MockBehavior.Strict);
-        userUnitOfWorkMock.Setup(m => m.GetRepository<User>()).Returns(userRepositoryMock.Object);
-
-        UserLogic userLogic = new(userValidatorMock.Object, userUnitOfWorkMock.Object);
-        UserLogicAdapter userLogicAdapter = new(userLogic, userModelValidatorMock.Object, mapperMock.Object);
-
-        var controller = new UserController(userLogicAdapter);
-        var result = controller.Delete(1);
-
-        userValidatorMock.VerifyAll();
-        userModelValidatorMock.VerifyAll();
-        userRepositoryMock.VerifyAll();
-        mapperMock.VerifyAll();
-        userUnitOfWorkMock.VerifyAll();
-
-        Assert.IsInstanceOfType(result, typeof(NotFoundResult));
+        Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
+        Assert.IsTrue((await response.Content.ReadAsStringAsync()).Contains("ID: 1 not found"));
     }
 }

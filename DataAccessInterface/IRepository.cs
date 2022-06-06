@@ -13,16 +13,16 @@ namespace DataAccessInterface
         bool Exist(Expression<Func<T, bool>> condition);
 
         T Get(
-            Expression<Func<T, bool>> condition, 
+            Expression<Func<T, bool>> condition,
             Expression<Func<T, T>> selector = null,
-            Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null, 
+            Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
             bool track = false);
 
         IEnumerable<T> GetCollection(
-            Expression<Func<T, bool>> condition = null,
-            Expression<Func<T, T>> selector = null,
-            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
-            Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null);
+            Expression<Func<T, bool>>? condition = null,
+            Expression<Func<T, T>>? selector = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+            Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null);
 
         void InsertAndSave(T entity);
         void SaveChanges();
