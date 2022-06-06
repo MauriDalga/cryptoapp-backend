@@ -17,16 +17,20 @@ public class UserDetailInfoModel
         Email = user.Email;
     }
 
-    public override bool Equals(object obj)
+    public UserDetailInfoModel()
+    {
+    }
+
+    public override bool Equals(object? obj)
     {
         var result = false;
 
         if (obj is UserDetailInfoModel user)
         {
             result = Id == user.Id &&
-                Name.Equals(user.Name) &&
-                Lastname.Equals(user.Lastname) &&
-                Email.Equals(user.Email);
+                     Name.Equals(user.Name) &&
+                     Lastname.Equals(user.Lastname) &&
+                     Email.Equals(user.Email);
         }
 
         return result;
@@ -35,10 +39,5 @@ public class UserDetailInfoModel
     public override int GetHashCode()
     {
         return base.GetHashCode();
-    }
-
-    public override string ToString()
-    {
-        return base.ToString();
     }
 }

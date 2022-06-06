@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Context.Configurations
 {
-    internal abstract class BaseConfiguration<T> : IEntityTypeConfiguration<T> where T : class
+    public abstract class BaseConfiguration<T> : IEntityTypeConfiguration<T> where T : class
     {
         public void Configure(EntityTypeBuilder<T> builder)
         {
@@ -12,8 +12,16 @@ namespace Context.Configurations
             ConfigureStartupValues(builder);
         }
 
-        protected virtual void ConfigureProperties(EntityTypeBuilder<T> builder) { }
-        protected virtual void ConfigureRelationShips(EntityTypeBuilder<T> builder) { }
-        protected virtual void ConfigureStartupValues(EntityTypeBuilder<T> builder) { }
+        protected virtual void ConfigureProperties(EntityTypeBuilder<T> builder)
+        {
+        }
+
+        protected virtual void ConfigureRelationShips(EntityTypeBuilder<T> builder)
+        {
+        }
+
+        protected virtual void ConfigureStartupValues(EntityTypeBuilder<T> builder)
+        {
+        }
     }
 }

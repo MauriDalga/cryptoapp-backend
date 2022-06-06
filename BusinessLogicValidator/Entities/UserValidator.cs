@@ -59,7 +59,7 @@ public class UserValidator : BaseValidator<User>
 
         if (!existUserWithThatId)
         {
-            throw new ArgumentException($"ID: {id} not found.");
+            throw new KeyNotFoundException($"ID: {id} not found.");
         }
     }
 }

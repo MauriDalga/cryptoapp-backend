@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Domain;
+﻿using Domain;
 
 namespace Model.Read;
 public class UserBasicModel
@@ -35,10 +31,5 @@ public class UserBasicModel
     public override int GetHashCode()
     {
         return base.GetHashCode();
-    }
-
-    public override string ToString()
-    {
-        return base.ToString();
     }
 }
