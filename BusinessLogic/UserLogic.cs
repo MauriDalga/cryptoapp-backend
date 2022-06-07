@@ -8,7 +8,7 @@ namespace BusinessLogic;
 public class UserLogic : BaseLogic
 {
     private const int InitialBalance = 10;
-    
+
     private readonly IRepository<User> _userRepository;
     private readonly IRepository<CoinAccount> _coinAccountRepository;
     private readonly IBusinessValidator<User> _userValidator;
@@ -25,9 +25,13 @@ public class UserLogic : BaseLogic
     public User Add(User user)
     {
         _userValidator.CreationValidation(user);
-        
 
         _userRepository.InsertAndSave(user);
+
+        user.Token = user.Id + "_" + Guid.NewGuid().ToString();
+
+        _userRepository.UpdateAndSave(user);
+
         // Mocking UserAccounts for testing purpose.
         CreateInitialAccount(user.Id, 1);
         CreateInitialAccount(user.Id, 2);
@@ -67,11 +71,30 @@ public class UserLogic : BaseLogic
         return _userRepository.Get(users => users.Id == id);
     }
 
+    public bool IsValidToken(string token, string? id)
+    {
+        if (string.IsNullOrEmpty(id))
+        {
+            return _userRepository.Exist(users => users.Token == token);
+        }
+
+        return _userRepository.Exist(users => users.Id == int.Parse(id) && users.Token == token);
+    }
+
     public IEnumerable<CoinAccount> GetAccountsFromUser(int id)
     {
         _userValidator.ValidateIdentifier(id);
 
         return _coinAccountRepository.GetCollection(condition: account => account.UserId == id,
             include: accounts => accounts.Include(account => account.Coin)!);
+    }
+
+    public User GetUserFromLogIn(string email, string password)
+    {
+        _userValidator.ValidateEmailPassword(email, password);
+
+        return _userRepository.Get(
+            users => users.Email == email && users.Password == password
+            );
     }
 }

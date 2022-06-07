@@ -24,6 +24,7 @@
 <PrivateAssets>all</PrivateAssets>
 </PackageReference>
     <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="TestToolsToXunitProxy" Version="0.0.4" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,5 +32,8 @@
     <ProjectReference Include="..\Domain\Domain.csproj" />
     <ProjectReference Include="..\Model\Model.csproj" />
     <ProjectReference Include="..\BusinessLogicAdapter\BusinessLogicAdapter.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="TestToolsToXunitProxy" />
   </ItemGroup>
 </Project>

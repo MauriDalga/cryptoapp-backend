@@ -10,5 +10,6 @@ internal static class BusinessLogicAdapterFactory
         services.AddAutoMapper(typeof(UserProfile));
         services.AddAutoMapper(typeof(CoinAccountProfile));
         services.AddTransient<UserLogicAdapter>();
+        services.AddTransient<SessionLogicAdapter>();
     }
 }

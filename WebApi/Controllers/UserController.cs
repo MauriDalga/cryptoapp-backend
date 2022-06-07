@@ -2,13 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Model.Read;
 using Model.Write;
+using WebApi.Filters;
 
-[assembly: ApiController]
 namespace WebApi.Controllers
 {
-    [Route("users")]
-    //[AuthenticationFilter]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [Route("api/users")]
     public class UserController : Controller
     {
         private readonly UserLogicAdapter _userLogicAdapter;
@@ -18,6 +16,7 @@ namespace WebApi.Controllers
             _userLogicAdapter = userLogicAdapter;
         }
 
+        [AuthenticationFilter]
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -34,6 +33,7 @@ namespace WebApi.Controllers
             }
         }
 
+        [AuthenticationFilter]
         [HttpGet("{id}", Name = "GetUserById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -54,7 +54,7 @@ namespace WebApi.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult Post(UserModel user)
+        public IActionResult Post([FromBody] UserModel user)
         {
             try
             {
@@ -68,6 +68,7 @@ namespace WebApi.Controllers
             }
         }
 
+        [AuthenticationFilter]
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -89,7 +90,8 @@ namespace WebApi.Controllers
                 return BadRequest(err.Message);
             }
         }
-        
+
+        [AuthenticationFilter]
         [Route("{id}/coin-accounts")]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]

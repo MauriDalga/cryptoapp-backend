@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Domain;
 using Model.Read;
 using Model.Write;
+using WebApi.Tests.Helpers;
 using Xunit;
 
 namespace WebApi.Tests;
@@ -18,7 +20,8 @@ public class UserControllerTest : BaseIntegrationTest
         Name = "John",
         Lastname = "Doe",
         Email = "john.doe@test.com",
-        Password = "test_password1"
+        Password = "test_password1",
+        Token = "1234-5678-90"
     };
 
     private readonly UserDetailInfoModel _testUserModel = new()
@@ -26,7 +29,8 @@ public class UserControllerTest : BaseIntegrationTest
         Id = 1,
         Name = "John",
         Lastname = "Doe",
-        Email = "john.doe@test.com"
+        Email = "john.doe@test.com",
+        Token = "1234-5678-90"
     };
 
     public UserControllerTest(TestingWebAppFactory<Program> factory) : base(factory)
@@ -42,7 +46,8 @@ public class UserControllerTest : BaseIntegrationTest
         Context.Users.Add(_testUserEntity);
         await Context.SaveChangesAsync();
 
-        var response = await HttpClient.GetAsync($"users/{_testUserEntity.Id}");
+        HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("1234-5678-90");
+        var response = await HttpClient.GetAsync($"api/users/{_testUserEntity.Id}");
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var responseUser = await response.Content.ReadFromJsonAsync<UserDetailInfoModel>();
@@ -53,10 +58,11 @@ public class UserControllerTest : BaseIntegrationTest
     [Fact]
     public async Task TestGetByIdUserNotFound()
     {
-        var response = await HttpClient.GetAsync($"users/{1}");
+        HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("1234-5678-90");
+        var response = await HttpClient.GetAsync($"api/users/{1}");
 
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-        Assert.Equal("ID: 1 not found.", (await response.Content.ReadAsStringAsync()));
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        Assert.Equal("{\"Message\":\"Header 'Authorization' expired or invalid.\"}", (await response.Content.ReadAsStringAsync()));
     }
 
     [Fact]
@@ -70,7 +76,7 @@ public class UserControllerTest : BaseIntegrationTest
             Password = "test_password"
         };
 
-        var response = await HttpClient.PostAsync("users", TestUtils.GetJsonHttpContentFrom(userModel));
+        var response = await HttpClient.PostAsync("api/users", TestUtils.GetJsonHttpContentFrom(userModel));
 
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
         var responseUser = await response.Content.ReadFromJsonAsync<UserDetailInfoModel>();
@@ -90,7 +96,7 @@ public class UserControllerTest : BaseIntegrationTest
         };
         const string expectedErrorMsg = "Property 'name' can't be empty. \n Property 'lastname' can't be empty.";
 
-        var response = await HttpClient.PostAsync("users", TestUtils.GetJsonHttpContentFrom(userModel));
+        var response = await HttpClient.PostAsync("api/users", TestUtils.GetJsonHttpContentFrom(userModel));
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         Assert.Equal(expectedErrorMsg, (await response.Content.ReadAsStringAsync()));
@@ -109,7 +115,8 @@ public class UserControllerTest : BaseIntegrationTest
         };
         const string expectedErrorMsg = "Property 'name' can't be empty. \n Property 'lastname' can't be empty.";
 
-        var response = await HttpClient.PutAsync($"users/{1}", TestUtils.GetJsonHttpContentFrom(userModel));
+        HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("1234-5678-90");
+        var response = await HttpClient.PutAsync($"api/users/{1}", TestUtils.GetJsonHttpContentFrom(userModel));
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         Assert.Equal(expectedErrorMsg, (await response.Content.ReadAsStringAsync()));
@@ -126,10 +133,11 @@ public class UserControllerTest : BaseIntegrationTest
             Password = "Password_1",
         };
 
-        var response = await HttpClient.PutAsync($"users/{1}", TestUtils.GetJsonHttpContentFrom(userModel));
+        HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("1234-5678-90");
+        var response = await HttpClient.PutAsync($"api/users/{1}", TestUtils.GetJsonHttpContentFrom(userModel));
 
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-        Assert.Equal("ID: 1 not found.", (await response.Content.ReadAsStringAsync()));
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        Assert.Equal("{\"Message\":\"Header 'Authorization' expired or invalid.\"}", (await response.Content.ReadAsStringAsync()));
     }
 
     [Fact]
@@ -137,7 +145,9 @@ public class UserControllerTest : BaseIntegrationTest
     {
         Context.Users.Add(_testUserEntity);
         await Context.SaveChangesAsync();
-        var response = await HttpClient.DeleteAsync($"users/{1}");
+
+        HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("1234-5678-90");
+        var response = await HttpClient.DeleteAsync($"api/users/{1}");
 
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
         Assert.False(Context.Users.AsEnumerable().Any());
@@ -146,10 +156,11 @@ public class UserControllerTest : BaseIntegrationTest
     [Fact]
     public async Task TestDeleteUserNotFound()
     {
-        var response = await HttpClient.DeleteAsync($"users/{5}");
+        HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("1234-5678-90");
+        var response = await HttpClient.DeleteAsync($"api/users/{5}");
 
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-        Assert.Equal("ID: 5 not found.", (await response.Content.ReadAsStringAsync()));
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        Assert.Equal("{\"Message\":\"Header 'Authorization' expired or invalid.\"}", (await response.Content.ReadAsStringAsync()));
     }
 
     [Fact]
@@ -157,11 +168,11 @@ public class UserControllerTest : BaseIntegrationTest
     {
         await Context.Users.AddAsync(_testUserEntity);
         await Context.CoinAccounts.AddRangeAsync(new CoinAccount
-            {
-                CoinId = 1,
-                Balance = 10,
-                UserId = 1
-            },
+        {
+            CoinId = 1,
+            Balance = 10,
+            UserId = 1
+        },
             new CoinAccount
             {
                 CoinId = 2,
@@ -170,7 +181,8 @@ public class UserControllerTest : BaseIntegrationTest
             });
         await Context.SaveChangesAsync();
 
-        var response = await HttpClient.GetAsync($"users/{1}/coin-accounts");
+        HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("1234-5678-90");
+        var response = await HttpClient.GetAsync($"api/users/{1}/coin-accounts");
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var responseCoinAccounts = await response.Content.ReadFromJsonAsync<IEnumerable<CoinAccountModel>>();
@@ -181,9 +193,10 @@ public class UserControllerTest : BaseIntegrationTest
     [Fact]
     public async Task TestGetAccountsFromUserNotFound()
     {
-        var response = await HttpClient.GetAsync($"users/{1}/coin-accounts");
+        HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("1234-5678-90");
+        var response = await HttpClient.GetAsync($"api/users/{1}/coin-accounts");
 
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-        Assert.Contains("ID: 1 not found", (await response.Content.ReadAsStringAsync()));
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        Assert.Equal("{\"Message\":\"Header 'Authorization' expired or invalid.\"}", (await response.Content.ReadAsStringAsync()));
     }
 }

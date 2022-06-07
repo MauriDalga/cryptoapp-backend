@@ -9,7 +9,7 @@ using Moq;
 namespace BusinessLogic.Tests
 {
     [TestClass]
-    public class UserTest
+    public class UserLogicTest
     {
         private User _user = new();
         private List<CoinAccount> _coinAccounts = new();
@@ -62,6 +62,7 @@ namespace BusinessLogic.Tests
         {
             _userValidatorMock.Setup(m => m.CreationValidation(_user));
             _userRepositoryMock.Setup(m => m.InsertAndSave(_user));
+            _userRepositoryMock.Setup(m => m.UpdateAndSave(_user));
             _accountRepositoryMock.Setup(m => m.InsertAndSave(It.IsAny<CoinAccount>()));
 
             var returnedUser = _userLogic.Add(_user);
@@ -113,6 +114,39 @@ namespace BusinessLogic.Tests
         }
 
         [TestMethod]
+        public void IsValidToken()
+        {
+            _userRepositoryMock.Setup(m => m.Exist(It.IsAny<Expression<Func<User, bool>>>())).Returns(true);
+
+            var returnedValue = _userLogic.IsValidToken("1234-5678-90", null);
+
+            _userRepositoryMock.VerifyAll();
+            Assert.IsTrue(returnedValue);
+        }
+
+        [TestMethod]
+        public void IsValidTokenWithId()
+        {
+            _userRepositoryMock.Setup(m => m.Exist(It.IsAny<Expression<Func<User, bool>>>())).Returns(true);
+
+            var returnedValue = _userLogic.IsValidToken("1234-5678-90", "1");
+
+            _userRepositoryMock.VerifyAll();
+            Assert.IsTrue(returnedValue);
+        }
+
+        [TestMethod]
+        public void IsValidTokenWithNonExistingUser()
+        {
+            _userRepositoryMock.Setup(m => m.Exist(It.IsAny<Expression<Func<User, bool>>>())).Returns(false);
+
+            var returnedValue = _userLogic.IsValidToken("1234-5678-90", null);
+
+            _userRepositoryMock.VerifyAll();
+            Assert.IsFalse(returnedValue);
+        }
+
+        [TestMethod]
         public void GetAccountsFromUser()
         {
             _userValidatorMock.Setup(m => m.ValidateIdentifier(1));
@@ -125,6 +159,20 @@ namespace BusinessLogic.Tests
             _userValidatorMock.VerifyAll();
             _accountRepositoryMock.VerifyAll();
             Assert.AreEqual(_coinAccounts.First(), returnedCoinAccounts.First());
+        }
+
+        [TestMethod]
+        public void GetUserFromLogIn()
+        {
+            _userValidatorMock.Setup(m => m.ValidateEmailPassword("john.doe@test.com", "some_password"));
+            _userRepositoryMock.Setup(m => m.Get(It.IsAny<Expression<Func<User, bool>>>(), null, null, false))
+                .Returns(_user);
+
+            var returnedUserFromLogin = _userLogic.GetUserFromLogIn("john.doe@test.com", "some_password");
+
+            _userValidatorMock.VerifyAll();
+            _userRepositoryMock.VerifyAll();
+            Assert.AreEqual("John", returnedUserFromLogin.Name);
         }
     }
 }
