@@ -9,6 +9,7 @@ public class UserDetailInfoModel
     public string Lastname { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public string Token { get; set; } = string.Empty;
+    public string Image { get; set; } = string.Empty;
 
     public UserDetailInfoModel(User user)
     {
@@ -17,6 +18,7 @@ public class UserDetailInfoModel
         Lastname = user.Lastname;
         Email = user.Email;
         Token = user.Token;
+        Image = user.Image;
     }
 
     public UserDetailInfoModel()

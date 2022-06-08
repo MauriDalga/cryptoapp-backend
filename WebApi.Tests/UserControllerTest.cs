@@ -21,7 +21,8 @@ public class UserControllerTest : BaseIntegrationTest
         Lastname = "Doe",
         Email = "john.doe@test.com",
         Password = "test_password1",
-        Token = "1234-5678-90"
+        Token = "1234-5678-90",
+        Image = "some-image-base64"
     };
 
     private readonly UserDetailInfoModel _testUserModel = new()
@@ -30,7 +31,8 @@ public class UserControllerTest : BaseIntegrationTest
         Name = "John",
         Lastname = "Doe",
         Email = "john.doe@test.com",
-        Token = "1234-5678-90"
+        Token = "1234-5678-90",
+        Image = "some-image-base64"
     };
 
     public UserControllerTest(TestingWebAppFactory<Program> factory) : base(factory)
@@ -100,6 +102,27 @@ public class UserControllerTest : BaseIntegrationTest
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         Assert.Equal(expectedErrorMsg, (await response.Content.ReadAsStringAsync()));
+    }
+
+    [Fact]
+    public async Task TestPutUserOk()
+    {
+        Context.Users.Add(_testUserEntity);
+        await Context.SaveChangesAsync();
+
+        UserModel userModel = new()
+        {
+            Name = "John",
+            Lastname = "Doe",
+            Email = "john.doe@test.com",
+            Password = "test_password",
+            Image = "some-other-image-base64"
+        };
+
+        HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("1234-5678-90");
+        var response = await HttpClient.PutAsync($"api/users/{1}", TestUtils.GetJsonHttpContentFrom(userModel));
+
+        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
     }
 
     [Fact]
