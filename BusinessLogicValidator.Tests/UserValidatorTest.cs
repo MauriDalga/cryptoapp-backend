@@ -575,6 +575,56 @@ namespace BusinessLogicValidator.Tests
 
             Assert.AreEqual("Email must remain the same.", errorMessage);
         }
+
+        [TestMethod]
+        public void LogInValidation()
+        {
+            var userRepositoryMock = new Mock<IRepository<User>>(MockBehavior.Strict);
+            userRepositoryMock.Setup(m => m.Exist(It.IsAny<Expression<Func<User, bool>>>())).Returns(false);
+
+            var userUnitOfWorkMock = new Mock<IUnitOfWork>(MockBehavior.Strict);
+            userUnitOfWorkMock.Setup(m => m.GetRepository<User>()).Returns(userRepositoryMock.Object);
+
+            UserValidator userValidator = new(userUnitOfWorkMock.Object);
+            userValidator.LogInValidation(user);
+        }
+
+        [TestMethod]
+        public void ValidateEmailPassword()
+        {
+            var userRepositoryMock = new Mock<IRepository<User>>(MockBehavior.Strict);
+            userRepositoryMock.Setup(m => m.Exist(It.IsAny<Expression<Func<User, bool>>>())).Returns(true);
+
+            var userUnitOfWorkMock = new Mock<IUnitOfWork>(MockBehavior.Strict);
+            userUnitOfWorkMock.Setup(m => m.GetRepository<User>()).Returns(userRepositoryMock.Object);
+
+            UserValidator userValidator = new(userUnitOfWorkMock.Object);
+            userValidator.ValidateEmailPassword("john.doe@test.com", "some_password");
+        }
+
+        [TestMethod]
+        public void ValidateEmailPasswordWithWrongCredentials()
+        {
+            var userRepositoryMock = new Mock<IRepository<User>>(MockBehavior.Strict);
+            userRepositoryMock.Setup(m => m.Exist(It.IsAny<Expression<Func<User, bool>>>())).Returns(false);
+
+            var userUnitOfWorkMock = new Mock<IUnitOfWork>(MockBehavior.Strict);
+            userUnitOfWorkMock.Setup(m => m.GetRepository<User>()).Returns(userRepositoryMock.Object);
+
+            UserValidator userValidator = new(userUnitOfWorkMock.Object);
+
+            string errorMessage = "";
+            try
+            {
+                userValidator.ValidateEmailPassword("john.doe@test.com", "some_password");
+            }
+            catch (Exception exception)
+            {
+                errorMessage = exception.Message;
+            }
+
+            Assert.AreEqual("Invalid credentials.", errorMessage);
+        }
     }
 }
 

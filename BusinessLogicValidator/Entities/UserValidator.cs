@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using DataAccessInterface;
+﻿using DataAccessInterface;
 using Domain;
 using FluentValidation;
 
@@ -60,6 +56,17 @@ public class UserValidator : BaseValidator<User>
         if (!existUserWithThatId)
         {
             throw new KeyNotFoundException($"ID: {id} not found.");
+        }
+    }
+
+    protected override void BusinessLogInValidation(string email, string password)
+    {
+        bool existUserWithThatEmailAndPassword = _userRepository
+            .Exist(userSaved => userSaved.Email == email && userSaved.Password == password);
+
+        if (!existUserWithThatEmailAndPassword)
+        {
+            throw new ArgumentException("Invalid credentials.");
         }
     }
 }

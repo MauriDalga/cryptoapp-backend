@@ -3,7 +3,6 @@ using FluentValidation;
 using FluentValidation.Results;
 
 namespace BusinessLogicValidator;
-//https://docs.fluentvalidation.net/en/latest/
 public class BaseValidator<TEntity> : AbstractValidator<TEntity>, IBusinessValidator<TEntity> where TEntity : class
 {
     public void CreationValidation(TEntity entity)
@@ -70,4 +69,18 @@ public class BaseValidator<TEntity> : AbstractValidator<TEntity>, IBusinessValid
     }
 
     protected virtual void BusinessEditionValidation(int id, TEntity entity) { }
+
+    public void LogInValidation(TEntity entity)
+    {
+        Validate(entity);
+
+        IncludeValidation(entity);
+    }
+
+    public void ValidateEmailPassword(string email, string password)
+    {
+        BusinessLogInValidation(email, password);
+    }
+
+    protected virtual void BusinessLogInValidation(string email, string password) { }
 }

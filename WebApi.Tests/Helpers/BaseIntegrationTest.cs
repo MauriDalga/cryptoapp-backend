@@ -1,11 +1,11 @@
-using System;
-using System.Linq;
+
 using System.Net.Http;
 using Context;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace WebApi.Tests;
+[assembly: CollectionBehavior(DisableTestParallelization = true)]
+namespace WebApi.Tests.Helpers;
 
 public class BaseIntegrationTest : IClassFixture<TestingWebAppFactory<Program>>
 {
