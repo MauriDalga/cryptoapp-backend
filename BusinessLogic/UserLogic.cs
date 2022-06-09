@@ -28,7 +28,7 @@ public class UserLogic : BaseLogic
 
         _userRepository.InsertAndSave(user);
 
-        user.Token = user.Id + "_" + Guid.NewGuid().ToString();
+        user.Token = Guid.NewGuid().ToString();
 
         _userRepository.UpdateAndSave(user);
 
@@ -60,6 +60,9 @@ public class UserLogic : BaseLogic
     {
         _userValidator.ValidateIdentifier(id);
         _userValidator.EditionValidation(id, user);
+
+        User savedUser = Get(id);
+        user.Token = savedUser.Token;
 
         _userRepository.UpdateAndSave(user);
     }

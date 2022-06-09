@@ -28,7 +28,8 @@ namespace BusinessLogic.Tests
                 Name = "John",
                 Lastname = "Doe",
                 Email = "john.doe@test.com",
-                Password = "testPassword"
+                Password = "testPassword",
+                Image = ""
             };
 
             _coinAccounts = new()
