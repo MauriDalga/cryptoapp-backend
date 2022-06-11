@@ -14,7 +14,7 @@ public class UserBasicModel
         Lastname = user.Lastname;
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         var result = false;
 

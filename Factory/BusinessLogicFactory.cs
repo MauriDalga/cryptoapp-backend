@@ -8,5 +8,6 @@ internal static class BusinessLogicFactory
     public static void InjectBusinessLogics(this IServiceCollection services)
     {
         services.AddTransient<UserLogic>();
+        services.AddTransient<TransactionLogic>();
     }
 }

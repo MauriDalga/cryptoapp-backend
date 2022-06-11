@@ -83,4 +83,11 @@ public class BaseValidator<TEntity> : AbstractValidator<TEntity>, IBusinessValid
     }
 
     protected virtual void BusinessLogInValidation(string email, string password) { }
+
+    public void ValidateWalletAddress(string walletAddress)
+    {
+        BusinessWalletAddressValidation(walletAddress);
+    }
+
+    protected virtual void BusinessWalletAddressValidation(string walletAddress) { }
 }

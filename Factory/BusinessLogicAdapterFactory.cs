@@ -11,5 +11,6 @@ internal static class BusinessLogicAdapterFactory
         services.AddAutoMapper(typeof(CoinAccountProfile));
         services.AddTransient<UserLogicAdapter>();
         services.AddTransient<SessionLogicAdapter>();
+        services.AddTransient<TransactionLogicAdapter>();
     }
 }

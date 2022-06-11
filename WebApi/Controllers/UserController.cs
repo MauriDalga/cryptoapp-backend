@@ -90,24 +90,5 @@ namespace WebApi.Controllers
                 return BadRequest(err.Message);
             }
         }
-
-        [AuthenticationFilter]
-        [Route("{id}/coin-accounts")]
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetAccountsFromUser([FromRoute] int id)
-        {
-            try
-            {
-                var coinAccounts = _userLogicAdapter.GetAccountsFromUser(id);
-
-                return Ok(coinAccounts);
-            }
-            catch (KeyNotFoundException err)
-            {
-                return NotFound(err.Message);
-            }
-        }
     }
 }

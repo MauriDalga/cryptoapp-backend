@@ -11,6 +11,8 @@ public class UserDetailInfoModel
     public string Token { get; set; } = string.Empty;
     public string Image { get; set; } = string.Empty;
 
+    public List<CoinAccountDetailInfoModel> CoinAccounts { get; set; } = new List<CoinAccountDetailInfoModel>();
+
     public UserDetailInfoModel(User user)
     {
         Id = user.Id;
@@ -19,6 +21,9 @@ public class UserDetailInfoModel
         Email = user.Email;
         Token = user.Token;
         Image = user.Image;
+        CoinAccounts = user.CoinAccounts != null
+            ? user.CoinAccounts.Select(ca => new CoinAccountDetailInfoModel(ca)).ToList()
+            : new List<CoinAccountDetailInfoModel>();
     }
 
     public UserDetailInfoModel()
