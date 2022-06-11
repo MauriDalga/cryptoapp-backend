@@ -3,6 +3,7 @@ using Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Context.Migrations
 {
     [DbContext(typeof(MyContext))]
-    partial class MyContextModelSnapshot : ModelSnapshot
+    [Migration("20220609155722_NewUsers")]
+    partial class NewUsers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -122,24 +124,16 @@ namespace Context.Migrations
 
             modelBuilder.Entity("Domain.CoinAccount", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<decimal>("Balance")
-                        .HasColumnType("decimal(30,16)");
-
                     b.Property<int>("CoinId")
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.Property<decimal>("Balance")
+                        .HasColumnType("decimal(30,16)");
 
-                    b.HasIndex("CoinId");
+                    b.HasKey("CoinId", "UserId");
 
                     b.HasIndex("UserId");
 
@@ -148,243 +142,58 @@ namespace Context.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
-                            Balance = 3.64730900000618m,
                             CoinId = 1,
-                            UserId = 1
+                            UserId = 1,
+                            Balance = 10m
                         },
                         new
                         {
-                            Id = 2,
-                            Balance = 8.57240883895451m,
                             CoinId = 2,
-                            UserId = 1
+                            UserId = 1,
+                            Balance = 10m
                         },
                         new
                         {
-                            Id = 3,
-                            Balance = 1.73677566535256m,
                             CoinId = 3,
-                            UserId = 1
+                            UserId = 1,
+                            Balance = 10m
                         },
                         new
                         {
-                            Id = 4,
-                            Balance = 8.39667407323132m,
-                            CoinId = 4,
-                            UserId = 1
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Balance = 6.57065754548116m,
-                            CoinId = 5,
-                            UserId = 1
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Balance = 5.43330248430767m,
-                            CoinId = 6,
-                            UserId = 1
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Balance = 1.93929585923548m,
-                            CoinId = 7,
-                            UserId = 1
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Balance = 1.73351118866005m,
-                            CoinId = 8,
-                            UserId = 1
-                        },
-                        new
-                        {
-                            Id = 9,
-                            Balance = 9.3220418176228m,
-                            CoinId = 9,
-                            UserId = 1
-                        },
-                        new
-                        {
-                            Id = 10,
-                            Balance = 4.75088161392274m,
-                            CoinId = 10,
-                            UserId = 1
-                        },
-                        new
-                        {
-                            Id = 11,
-                            Balance = 2.54635651896306m,
                             CoinId = 1,
-                            UserId = 2
+                            UserId = 2,
+                            Balance = 10m
                         },
                         new
                         {
-                            Id = 12,
-                            Balance = 7.82244046494325m,
                             CoinId = 2,
-                            UserId = 2
+                            UserId = 2,
+                            Balance = 10m
                         },
                         new
                         {
-                            Id = 13,
-                            Balance = 3.71516232364589m,
                             CoinId = 3,
-                            UserId = 2
+                            UserId = 2,
+                            Balance = 10m
                         },
                         new
                         {
-                            Id = 14,
-                            Balance = 5.6387781237608m,
-                            CoinId = 4,
-                            UserId = 2
-                        },
-                        new
-                        {
-                            Id = 15,
-                            Balance = 5.47081869673929m,
-                            CoinId = 5,
-                            UserId = 2
-                        },
-                        new
-                        {
-                            Id = 16,
-                            Balance = 8.38739319736387m,
-                            CoinId = 6,
-                            UserId = 2
-                        },
-                        new
-                        {
-                            Id = 17,
-                            Balance = 5.84611662024655m,
-                            CoinId = 7,
-                            UserId = 2
-                        },
-                        new
-                        {
-                            Id = 18,
-                            Balance = 0.374692161701902m,
-                            CoinId = 8,
-                            UserId = 2
-                        },
-                        new
-                        {
-                            Id = 19,
-                            Balance = 3.68494154724381m,
-                            CoinId = 9,
-                            UserId = 2
-                        },
-                        new
-                        {
-                            Id = 20,
-                            Balance = 5.12901618488232m,
-                            CoinId = 10,
-                            UserId = 2
-                        },
-                        new
-                        {
-                            Id = 21,
-                            Balance = 4.73541128095114m,
                             CoinId = 1,
-                            UserId = 3
+                            UserId = 3,
+                            Balance = 10m
                         },
                         new
                         {
-                            Id = 22,
-                            Balance = 9.59503637081357m,
                             CoinId = 2,
-                            UserId = 3
+                            UserId = 3,
+                            Balance = 10m
                         },
                         new
                         {
-                            Id = 23,
-                            Balance = 3.76176697807559m,
                             CoinId = 3,
-                            UserId = 3
-                        },
-                        new
-                        {
-                            Id = 24,
-                            Balance = 8.90773182594372m,
-                            CoinId = 4,
-                            UserId = 3
-                        },
-                        new
-                        {
-                            Id = 25,
-                            Balance = 6.3417129821418m,
-                            CoinId = 5,
-                            UserId = 3
-                        },
-                        new
-                        {
-                            Id = 26,
-                            Balance = 8.51866338446213m,
-                            CoinId = 6,
-                            UserId = 3
-                        },
-                        new
-                        {
-                            Id = 27,
-                            Balance = 1.90576386698029m,
-                            CoinId = 7,
-                            UserId = 3
-                        },
-                        new
-                        {
-                            Id = 28,
-                            Balance = 7.15466425716295m,
-                            CoinId = 8,
-                            UserId = 3
-                        },
-                        new
-                        {
-                            Id = 29,
-                            Balance = 5.70920110642024m,
-                            CoinId = 9,
-                            UserId = 3
-                        },
-                        new
-                        {
-                            Id = 30,
-                            Balance = 4.45368219350908m,
-                            CoinId = 10,
-                            UserId = 3
+                            UserId = 3,
+                            Balance = 10m
                         });
-                });
-
-            modelBuilder.Entity("Domain.Transaction", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("CoinId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ReceiverId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SenderId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CoinId");
-
-                    b.HasIndex("ReceiverId");
-
-                    b.ToTable("Transactions");
                 });
 
             modelBuilder.Entity("Domain.User", b =>
@@ -419,10 +228,6 @@ namespace Context.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("WalletAddress")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.ToTable("Users");
@@ -436,8 +241,7 @@ namespace Context.Migrations
                             Lastname = "Torres",
                             Name = "Gabriel",
                             Password = "gt12345",
-                            Token = "3dcfd273-2ccd-4d98-8a72-ba578eabc8da",
-                            WalletAddress = "23a89a95b93d452f9c6f6d135158ee88"
+                            Token = "6f235204-7971-40b0-9665-d5d6a97b78e9"
                         },
                         new
                         {
@@ -447,8 +251,7 @@ namespace Context.Migrations
                             Lastname = "Delgarrondo",
                             Name = "Mauricio",
                             Password = "md12345",
-                            Token = "ccba7e53-998e-47b3-ba96-dc5f65c3c95d",
-                            WalletAddress = "150fffd1e0f0459683dc59ec0674b8f5"
+                            Token = "16a7ecae-5476-4665-86f6-6eb5a3f28fd7"
                         },
                         new
                         {
@@ -458,8 +261,7 @@ namespace Context.Migrations
                             Lastname = "Rodriguez",
                             Name = "Romina",
                             Password = "rr12345",
-                            Token = "0f3ad323-96ea-40be-8f43-75ce281e130e",
-                            WalletAddress = "4d69d5cf4c0a4184afe4726500261215"
+                            Token = "9914424c-48df-47ce-a0ff-aa74dafc452e"
                         });
                 });
 
@@ -471,39 +273,13 @@ namespace Context.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.User", "User")
-                        .WithMany("CoinAccounts")
+                    b.HasOne("Domain.User", null)
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Coin");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Domain.Transaction", b =>
-                {
-                    b.HasOne("Domain.Coin", "Coin")
-                        .WithMany()
-                        .HasForeignKey("CoinId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.User", null)
-                        .WithMany("Transactions")
-                        .HasForeignKey("ReceiverId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Coin");
-                });
-
-            modelBuilder.Entity("Domain.User", b =>
-                {
-                    b.Navigation("CoinAccounts");
-
-                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }

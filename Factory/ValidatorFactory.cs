@@ -16,6 +16,8 @@ internal static class ValidatorFactory
     {
         services.AddTransient<IBusinessValidator<UserModel>, UserModelValidator>();
         services.AddTransient<IBusinessValidator<SessionModel>, SessionModelValidator>();
+        services.AddTransient<IBusinessValidator<TransactionModel>, TransactionModelValidator>();
         services.AddTransient<IBusinessValidator<User>, UserValidator>();
+        services.AddTransient<IBusinessValidator<Transaction>, TransactionValidator>();
     }
 }

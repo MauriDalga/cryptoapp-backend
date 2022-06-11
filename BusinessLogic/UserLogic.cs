@@ -7,18 +7,25 @@ namespace BusinessLogic;
 
 public class UserLogic : BaseLogic
 {
-    private const int InitialBalance = 10;
+    private static decimal RandomDecimal(float min, float max)
+    {
+        Random random = new();
+        double val = (random.NextDouble() * (max - min) + min);
+        return (decimal)val;
+    }
 
-    private readonly IRepository<User> _userRepository;
+    private readonly IRepository<Coin> _coinRepository;
     private readonly IRepository<CoinAccount> _coinAccountRepository;
+    private readonly IRepository<User> _userRepository;
     private readonly IBusinessValidator<User> _userValidator;
 
     public UserLogic(
         IBusinessValidator<User> userValidator,
         IUnitOfWork unitOfWork) : base(unitOfWork)
     {
-        _userRepository = unitOfWork.GetRepository<User>();
+        _coinRepository = unitOfWork.GetRepository<Coin>();
         _coinAccountRepository = unitOfWork.GetRepository<CoinAccount>();
+        _userRepository = unitOfWork.GetRepository<User>();
         _userValidator = userValidator;
     }
 
@@ -28,26 +35,33 @@ public class UserLogic : BaseLogic
 
         _userRepository.InsertAndSave(user);
 
-        user.Token = Guid.NewGuid().ToString();
-
-        _userRepository.UpdateAndSave(user);
-
         // Mocking UserAccounts for testing purpose.
         CreateInitialAccount(user.Id, 1);
         CreateInitialAccount(user.Id, 2);
         CreateInitialAccount(user.Id, 3);
+        CreateInitialAccount(user.Id, 4);
+        CreateInitialAccount(user.Id, 5);
+        CreateInitialAccount(user.Id, 6);
+        CreateInitialAccount(user.Id, 7);
+        CreateInitialAccount(user.Id, 8);
+        CreateInitialAccount(user.Id, 9);
+        CreateInitialAccount(user.Id, 10);
+
+        user.CoinAccounts.ForEach(ca =>
+            ca.Coin = _coinRepository.Get(coin => coin.Id == ca.CoinId));
 
         return user;
     }
 
     private void CreateInitialAccount(int userId, int coinId)
     {
-        _coinAccountRepository.InsertAndSave(new CoinAccount()
-        {
-            UserId = userId,
-            CoinId = coinId,
-            Balance = InitialBalance
-        });
+        _coinAccountRepository.InsertAndSave(
+            new CoinAccount()
+            {
+                UserId = userId,
+                CoinId = coinId,
+                Balance = RandomDecimal(0, 10)
+            });
     }
 
     public void Delete(int id)
@@ -71,7 +85,14 @@ public class UserLogic : BaseLogic
     {
         _userValidator.ValidateIdentifier(id);
 
-        return _userRepository.Get(users => users.Id == id);
+        User user = _userRepository.Get(
+            condition: users => users.Id == id,
+            include: users => users.Include(user => user.CoinAccounts));
+
+        user.CoinAccounts.ForEach(ca =>
+            ca.Coin = _coinRepository.Get(coin => coin.Id == ca.CoinId));
+
+        return user;
     }
 
     public bool IsValidToken(string token, string? id)
@@ -84,14 +105,6 @@ public class UserLogic : BaseLogic
         return _userRepository.Exist(users => users.Id == int.Parse(id) && users.Token == token);
     }
 
-    public IEnumerable<CoinAccount> GetAccountsFromUser(int id)
-    {
-        _userValidator.ValidateIdentifier(id);
-
-        return _coinAccountRepository.GetCollection(condition: account => account.UserId == id,
-            include: accounts => accounts.Include(account => account.Coin)!);
-    }
-
     public User GetUserFromLogIn(string email, string password)
     {
         _userValidator.ValidateEmailPassword(email, password);
@@ -99,5 +112,12 @@ public class UserLogic : BaseLogic
         return _userRepository.Get(
             users => users.Email == email && users.Password == password
             );
+    }
+
+    public User GetUserFromWalletAddress(string walletAddress)
+    {
+        _userValidator.ValidateWalletAddress(walletAddress);
+
+        return _userRepository.Get(users => users.WalletAddress == walletAddress);
     }
 }

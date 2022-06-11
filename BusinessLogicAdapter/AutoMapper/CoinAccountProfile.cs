@@ -13,6 +13,7 @@ public class CoinAccountProfile : Profile
 
     private void FromCoinAccountToCoinAccountModel()
     {
-        CreateMap<CoinAccount, CoinAccountModel>().ConstructUsing(account => new CoinAccountModel(account));
+        CreateMap<CoinAccount, CoinAccountDetailInfoModel>()
+            .ConstructUsing(account => new CoinAccountDetailInfoModel(account));
     }
 }

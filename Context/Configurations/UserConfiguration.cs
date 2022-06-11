@@ -7,29 +7,33 @@ internal class UserConfiguration : BaseConfiguration<User>
 {
     protected override void ConfigureStartupValues(EntityTypeBuilder<User> builder)
     {
-        builder.HasData(new User
+        builder.HasData(
+            new User
             {
                 Id = 1,
-                Name = "name",
-                Lastname = "lastname",
-                Email = "mail@mail.com",
-                Password = "Password1"
+                Name = "Gabriel",
+                Lastname = "Torres",
+                Email = "gabriel.torres@gmail.com",
+                Password = "gt12345",
+                Token = Guid.NewGuid().ToString()
             },
             new User
             {
                 Id = 2,
-                Name = "name2",
-                Lastname = "lastname2",
-                Email = "mail2@mail.com",
-                Password = "Password2"
+                Name = "Mauricio",
+                Lastname = "Delgarrondo",
+                Email = "mauricio.delgarrando@gmail.com",
+                Password = "md12345",
+                Token = Guid.NewGuid().ToString()
             },
             new User
             {
                 Id = 3,
-                Name = "name3",
-                Lastname = "lastname3",
-                Email = "mail3@mail.com",
-                Password = "Password3"
+                Name = "Romina",
+                Lastname = "Rodriguez",
+                Email = "romina.rodriguez@gmail.com",
+                Password = "rr12345",
+                Token = Guid.NewGuid().ToString()
             });
     }
 }

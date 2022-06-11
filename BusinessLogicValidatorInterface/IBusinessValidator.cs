@@ -7,4 +7,5 @@ public interface IBusinessValidator<in TEntity> where TEntity : class
     void LogInValidation(TEntity entity);
     void ValidateIdentifier(int id);
     void ValidateEmailPassword(string email, string password);
+    void ValidateWalletAddress(string walletAddress);
 }

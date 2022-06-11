@@ -59,13 +59,4 @@ public class UserLogicAdapter : BaseLogicAdapter
 
         return _mapper.Map<UserDetailInfoModel>(user);
     }
-
-    public virtual IEnumerable<CoinAccountModel> GetAccountsFromUser(int userId)
-    {
-        _userModelValidator.ValidateIdentifier(userId);
-
-        var coinAccountEntities = _userLogic.GetAccountsFromUser(userId);
-
-        return _mapper.Map<IEnumerable<CoinAccount>,IEnumerable<CoinAccountModel>>(coinAccountEntities);
-    }
 }
