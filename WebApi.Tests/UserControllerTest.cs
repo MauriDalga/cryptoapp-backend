@@ -115,7 +115,8 @@ public class UserControllerTest : BaseIntegrationTest
             Name = "John",
             Lastname = "Doe",
             Email = "john.doe@test.com",
-            Password = "test_password"
+            Password = "test_password",
+            Image = "some-other-image-base64"
         };
 
         HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("1234-5678-90");
