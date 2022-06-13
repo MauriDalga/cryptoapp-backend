@@ -31,9 +31,9 @@ public class SessionLogicAdapter : BaseLogicAdapter
         return _mapper.Map<UserDetailInfoModel>(userLogIn);
     }
 
-    public bool IsValidToken(string token, string? id)
+    public bool IsValidToken(string token, string? id, string? queryUserId)
     {
-        return _userLogic.IsValidToken(token, id);
+        return _userLogic.IsValidToken(token, id, queryUserId);
     }
 }
 

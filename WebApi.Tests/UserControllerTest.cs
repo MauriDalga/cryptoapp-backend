@@ -110,17 +110,16 @@ public class UserControllerTest : BaseIntegrationTest
         Context.Users.Add(_testUserEntity);
         await Context.SaveChangesAsync();
 
-        UserModel userModel = new()
+        UserEditModel userEditModel = new()
         {
             Name = "John",
             Lastname = "Doe",
             Email = "john.doe@test.com",
-            Password = "test_password",
             Image = "some-other-image-base64"
         };
 
         HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("1234-5678-90");
-        var response = await HttpClient.PutAsync($"api/users/{1}", TestUtils.GetJsonHttpContentFrom(userModel));
+        var response = await HttpClient.PutAsync($"api/users/{1}", TestUtils.GetJsonHttpContentFrom(userEditModel));
 
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
     }
@@ -130,16 +129,15 @@ public class UserControllerTest : BaseIntegrationTest
     {
         Context.Users.Add(_testUserEntity);
         await Context.SaveChangesAsync();
-        UserModel userModel = new()
+        UserEditModel userEditModel = new()
         {
             Name = "",
-            Email = "user_1@gmail.com",
-            Password = "Password_1",
+            Email = "user_1@gmail.com"
         };
         const string expectedErrorMsg = "Property 'name' can't be empty. \n Property 'lastname' can't be empty.";
 
         HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("1234-5678-90");
-        var response = await HttpClient.PutAsync($"api/users/{1}", TestUtils.GetJsonHttpContentFrom(userModel));
+        var response = await HttpClient.PutAsync($"api/users/{1}", TestUtils.GetJsonHttpContentFrom(userEditModel));
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         Assert.Equal(expectedErrorMsg, (await response.Content.ReadAsStringAsync()));

@@ -22,10 +22,6 @@ public class UserValidator : BaseValidator<User>
         RuleFor(user => user.Email)
         .EmailAddress()
         .WithMessage("Property 'email' has incorrect format.");
-
-        RuleFor(user => user.Password)
-        .MinimumLength(7)
-        .WithMessage("Property 'password' should have 7 characters or more.");
     }
 
 

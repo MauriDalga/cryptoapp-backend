@@ -16,6 +16,7 @@ namespace BusinessLogic.Tests
         private Mock<IBusinessValidator<Transaction>> _transactionValidatorMock;
         private Mock<IRepository<Transaction>> _transactionRepositoryMock;
         private Mock<IRepository<CoinAccount>> _accountRepositoryMock;
+        private Mock<IRepository<User>> _userRepositoryMock;
         private TransactionLogic _transactionLogic;
 
         [TestInitialize]
@@ -34,10 +35,12 @@ namespace BusinessLogic.Tests
 
             _transactionRepositoryMock = new Mock<IRepository<Transaction>>(MockBehavior.Strict);
             _accountRepositoryMock = new Mock<IRepository<CoinAccount>>(MockBehavior.Strict);
+            _userRepositoryMock = new Mock<IRepository<User>>(MockBehavior.Strict);
 
             var unitOfWorkMock = new Mock<IUnitOfWork>(MockBehavior.Strict);
             unitOfWorkMock.Setup(m => m.GetRepository<Transaction>()).Returns(_transactionRepositoryMock.Object);
             unitOfWorkMock.Setup(m => m.GetRepository<CoinAccount>()).Returns(_accountRepositoryMock.Object);
+            unitOfWorkMock.Setup(m => m.GetRepository<User>()).Returns(_userRepositoryMock.Object);
 
             _transactionLogic = new TransactionLogic(_transactionValidatorMock.Object, unitOfWorkMock.Object);
         }
@@ -57,7 +60,6 @@ namespace BusinessLogic.Tests
             _transactionRepositoryMock.Setup(m => m.InsertAndSave(_transaction));
             _accountRepositoryMock.Setup(m => m.Get(It.IsAny<Expression<Func<CoinAccount, bool>>>(), null, null, false))
                 .Returns(_coinAccount);
-
             _accountRepositoryMock.Setup(m => m.UpdateAndSave(_coinAccount));
 
             _transactionLogic.Add(_transaction);
@@ -86,6 +88,78 @@ namespace BusinessLogic.Tests
             _transactionLogic.HandleTransactionAmount(_transaction);
 
             _accountRepositoryMock.VerifyAll();
+        }
+
+        [TestMethod]
+        public void GetAllUserTransactions()
+        {
+            List<Transaction> mockTransactionsList = new() { _transaction };
+            Dictionary<string, string> mockParametros = new()
+            {
+                { "userid", "1" }
+            };
+
+            _userRepositoryMock.Setup(m => m.Exist(It.IsAny<Expression<Func<User, bool>>>()))
+                .Returns(true);
+            _transactionRepositoryMock.Setup(m => m.GetCollection(
+                It.IsAny<Expression<Func<Transaction, bool>>>(),
+                null,
+                It.IsAny<Func<IQueryable<Transaction>, IOrderedQueryable<Transaction>>>(),
+                It.IsAny<Func<IQueryable<Transaction>, IIncludableQueryable<Transaction, object>>>()
+                )).Returns(mockTransactionsList);
+
+            IEnumerable<Transaction> returnedTransactions = _transactionLogic.GetCollection(mockParametros);
+
+            _transactionRepositoryMock.VerifyAll();
+            Assert.IsTrue((mockTransactionsList).SequenceEqual(returnedTransactions));
+        }
+
+        [TestMethod]
+        public void GetAllTransactionsNonExistingUser()
+        {
+            List<Transaction> mockTransactionsList = new() { _transaction };
+            Dictionary<string, string> mockParametros = new()
+            {
+                { "userid", "100" }
+            };
+
+            _userRepositoryMock.Setup(m => m.Exist(It.IsAny<Expression<Func<User, bool>>>()))
+                .Returns(false);
+
+            string result = "";
+            try
+            {
+                IEnumerable<Transaction> returnedTransactions = _transactionLogic.GetCollection(mockParametros);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                result = ex.Message;
+            }
+
+            _transactionRepositoryMock.VerifyAll();
+            Assert.AreEqual("ID: 100 not found.", result);
+        }
+
+        [TestMethod]
+        public void GetAllTransactionsWithoutUserIdParam()
+        {
+            Dictionary<string, string> mockParametros = new()
+            {
+                { "userid", "" }
+            };
+
+            string result = "";
+            try
+            {
+                IEnumerable<Transaction> returnedTransactions = _transactionLogic.GetCollection(mockParametros);
+            }
+            catch (ArgumentException ex)
+            {
+                result = ex.Message;
+            }
+
+            _transactionRepositoryMock.VerifyAll();
+            Assert.AreEqual("Missing user ID on query params.", result);
         }
     }
 }

@@ -76,6 +76,7 @@ public class UserLogic : BaseLogic
         _userValidator.EditionValidation(id, user);
 
         User savedUser = Get(id);
+        user.Password = savedUser.Password;
         user.Token = savedUser.Token;
 
         _userRepository.UpdateAndSave(user);
@@ -95,14 +96,18 @@ public class UserLogic : BaseLogic
         return user;
     }
 
-    public bool IsValidToken(string token, string? id)
+    public bool IsValidToken(string token, string? id, string? queryUserId)
     {
-        if (string.IsNullOrEmpty(id))
+        if (string.IsNullOrEmpty(queryUserId) && string.IsNullOrEmpty(id))
         {
             return _userRepository.Exist(users => users.Token == token);
         }
 
-        return _userRepository.Exist(users => users.Id == int.Parse(id) && users.Token == token);
+        int userId = !string.IsNullOrEmpty(queryUserId)
+            ? int.Parse(queryUserId)
+            : int.Parse(id);
+
+        return _userRepository.Exist(users => users.Id == userId && users.Token == token);
     }
 
     public User GetUserFromLogIn(string email, string password)

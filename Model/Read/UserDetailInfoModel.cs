@@ -9,6 +9,7 @@ public class UserDetailInfoModel
     public string Lastname { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public string Token { get; set; } = string.Empty;
+    public string WalletAddress { get; set; } = string.Empty;
     public string Image { get; set; } = string.Empty;
 
     public List<CoinAccountDetailInfoModel> CoinAccounts { get; set; } = new List<CoinAccountDetailInfoModel>();
@@ -20,6 +21,7 @@ public class UserDetailInfoModel
         Lastname = user.Lastname;
         Email = user.Email;
         Token = user.Token;
+        WalletAddress = user.WalletAddress;
         Image = user.Image;
         CoinAccounts = user.CoinAccounts != null
             ? user.CoinAccounts.Select(ca => new CoinAccountDetailInfoModel(ca)).ToList()
