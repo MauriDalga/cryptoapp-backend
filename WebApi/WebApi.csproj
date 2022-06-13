@@ -25,8 +25,10 @@
     <None Remove="DotNetEnv" />
     <None Remove="Newtonsoft.Json" />
     <None Remove="Microsoft.AspNetCore.Mvc.NewtonsoftJson" />
+    <None Remove="QueryModels\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Environment\" />
+    <Folder Include="QueryModels\" />
   </ItemGroup>
 </Project>

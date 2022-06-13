@@ -30,12 +30,13 @@ public class TransactionLogicAdapter : BaseLogicAdapter
 
         try
         {
+            User receiver = _userLogic.GetUserFromWalletAddress(transaction.ReceiverWalletAddress);
             Transaction transactionEntity = new()
             {
                 Amount = transaction.Amount,
                 CoinId = transaction.CoinId,
                 SenderId = transaction.SenderId,
-                ReceiverId = _userLogic.GetUserFromWalletAddress(transaction.ReceiverWalletAddress).Id
+                ReceiverId = receiver.Id
             };
 
             _transactionLogic.Add(transactionEntity);
@@ -44,6 +45,13 @@ public class TransactionLogicAdapter : BaseLogicAdapter
         {
             throw new ArgumentException(err.Message);
         }
+    }
+
+    public IEnumerable<TransactionBasicModel> GetCollection(IDictionary<string, string> queryParams)
+    {
+        var transactions = _transactionLogic.GetCollection(queryParams);
+
+        return _mapper.Map<IEnumerable<TransactionBasicModel>>(transactions);
     }
 }
 

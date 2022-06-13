@@ -45,6 +45,10 @@ namespace WebApi.Controllers
 
                 return Ok(user);
             }
+            catch (ArgumentException err)
+            {
+                return BadRequest(err.Message);
+            }
             catch (KeyNotFoundException err)
             {
                 return NotFound(err.Message);
@@ -73,7 +77,7 @@ namespace WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult Put([FromRoute] int id, [FromBody] UserModel user)
+        public IActionResult Put([FromRoute] int id, [FromBody] UserEditModel user)
         {
             try
             {

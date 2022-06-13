@@ -114,7 +114,7 @@ namespace BusinessLogic.Tests
         {
             _userRepositoryMock.Setup(m => m.Exist(It.IsAny<Expression<Func<User, bool>>>())).Returns(true);
 
-            var returnedValue = _userLogic.IsValidToken("1234-5678-90", null);
+            var returnedValue = _userLogic.IsValidToken("1234-5678-90", null, null);
 
             _userRepositoryMock.VerifyAll();
             Assert.IsTrue(returnedValue);
@@ -125,7 +125,18 @@ namespace BusinessLogic.Tests
         {
             _userRepositoryMock.Setup(m => m.Exist(It.IsAny<Expression<Func<User, bool>>>())).Returns(true);
 
-            var returnedValue = _userLogic.IsValidToken("1234-5678-90", "1");
+            var returnedValue = _userLogic.IsValidToken("1234-5678-90", "1", null);
+
+            _userRepositoryMock.VerifyAll();
+            Assert.IsTrue(returnedValue);
+        }
+
+        [TestMethod]
+        public void IsValidTokenWithUserIdParam()
+        {
+            _userRepositoryMock.Setup(m => m.Exist(It.IsAny<Expression<Func<User, bool>>>())).Returns(true);
+
+            var returnedValue = _userLogic.IsValidToken("1234-5678-90", null, "1");
 
             _userRepositoryMock.VerifyAll();
             Assert.IsTrue(returnedValue);
@@ -136,7 +147,7 @@ namespace BusinessLogic.Tests
         {
             _userRepositoryMock.Setup(m => m.Exist(It.IsAny<Expression<Func<User, bool>>>())).Returns(false);
 
-            var returnedValue = _userLogic.IsValidToken("1234-5678-90", null);
+            var returnedValue = _userLogic.IsValidToken("1234-5678-90", null, null);
 
             _userRepositoryMock.VerifyAll();
             Assert.IsFalse(returnedValue);

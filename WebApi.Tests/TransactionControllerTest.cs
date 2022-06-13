@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http.Headers;
@@ -14,6 +15,16 @@ namespace WebApi.Tests;
 
 public class TransactionControllerTest : BaseIntegrationTest
 {
+    private readonly Transaction _testTransactionEntity = new()
+    {
+        Id = 1,
+        Amount = 1,
+        SenderId = 1,
+        ReceiverId = 2,
+        Date = DateTime.Now,
+        CoinId = 1
+    };
+
     private readonly User _testSenderEntity = new()
     {
         Id = 1,
@@ -159,6 +170,69 @@ public class TransactionControllerTest : BaseIntegrationTest
             .PostAsync("api/transactions", TestUtils.GetJsonHttpContentFrom(transactionModel));
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.Equal(expectedErrorMsg, (await response.Content.ReadAsStringAsync()));
+    }
+
+    [Fact]
+    public async Task TestGetTransactionsFromUserOk()
+    {
+        Context.Users.Add(_testSenderEntity);
+        Context.Users.Add(_testReceiverEntity);
+        await Context.CoinAccounts.AddRangeAsync(
+            new CoinAccount
+            {
+                Id = 1,
+                CoinId = 1,
+                Balance = 10,
+                UserId = 1
+            },
+            new CoinAccount
+            {
+                Id = 2,
+                CoinId = 1,
+                Balance = 10,
+                UserId = 2
+            });
+        await Context.Transactions.AddAsync(_testTransactionEntity);
+        await Context.SaveChangesAsync();
+
+        HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("1234-5678-90");
+        var response = await HttpClient.GetAsync($"api/transactions?userid={1}");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var responseTransactions = await response.Content.ReadFromJsonAsync<IEnumerable<Transaction>>();
+        Assert.NotNull(responseTransactions);
+        Assert.Single(responseTransactions);
+    }
+
+    [Fact]
+    public async Task TestGetTransactionsFromWrongUser()
+    {
+        Context.Users.Add(_testSenderEntity);
+        Context.Users.Add(_testReceiverEntity);
+        await Context.CoinAccounts.AddRangeAsync(
+            new CoinAccount
+            {
+                Id = 1,
+                CoinId = 1,
+                Balance = 10,
+                UserId = 1
+            },
+            new CoinAccount
+            {
+                Id = 2,
+                CoinId = 1,
+                Balance = 10,
+                UserId = 2
+            });
+        await Context.Transactions.AddAsync(_testTransactionEntity);
+        await Context.SaveChangesAsync();
+
+        HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("1234-5678-90");
+        var response = await HttpClient.GetAsync($"api/transactions?userid={2}");
+
+        string expectedErrorMsg = "{\"message\":\"Header 'Authorization' expired or invalid.\"}";
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         Assert.Equal(expectedErrorMsg, (await response.Content.ReadAsStringAsync()));
     }
 }

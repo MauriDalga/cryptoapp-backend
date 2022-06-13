@@ -1,8 +1,8 @@
 ﻿using BusinessLogicAdapter;
 using Microsoft.AspNetCore.Mvc;
-using Model.Read;
 using Model.Write;
 using WebApi.Filters;
+using WebApi.QueryModels;
 
 namespace WebApi.Controllers
 {
@@ -15,6 +15,33 @@ namespace WebApi.Controllers
         public TransactionController(TransactionLogicAdapter transactionLogicAdapter)
         {
             _transactionLogicAdapter = transactionLogicAdapter;
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult Get([FromQuery] TransactionQueryModel transactionQueryModel)
+        {
+            try
+            {
+                if (!transactionQueryModel.NullParams())
+                {
+                    var queryParams = transactionQueryModel.GetParams();
+                    var transactions = _transactionLogicAdapter.GetCollection(queryParams);
+
+                    return Ok(transactions);
+                }
+
+                return BadRequest("Missing required query params.");
+            }
+            catch (ArgumentException err)
+            {
+                return BadRequest(err.Message);
+            }
+            catch (KeyNotFoundException err)
+            {
+                return NotFound(err.Message);
+            }
         }
 
         [HttpPost]

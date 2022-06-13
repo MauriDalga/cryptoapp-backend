@@ -11,14 +11,17 @@ public class UserLogicAdapter : BaseLogicAdapter
 {
     private readonly UserLogic _userLogic;
     private readonly IBusinessValidator<UserModel> _userModelValidator;
+    private readonly IBusinessValidator<UserEditModel> _userEditModelValidator;
 
     public UserLogicAdapter(
         UserLogic userLogic,
         IBusinessValidator<UserModel> userModelValidator,
+        IBusinessValidator<UserEditModel> userEditModelValidator,
         IMapper mapper) : base(mapper)
     {
         _userLogic = userLogic;
         _userModelValidator = userModelValidator;
+        _userEditModelValidator = userEditModelValidator;
     }
 
     public UserDetailInfoModel Create(UserModel user)
@@ -39,10 +42,10 @@ public class UserLogicAdapter : BaseLogicAdapter
         _userLogic.Delete(id);
     }
 
-    public void Edit(int id, UserModel user)
+    public void Edit(int id, UserEditModel user)
     {
         _userModelValidator.ValidateIdentifier(id);
-        _userModelValidator.EditionValidation(id, user);
+        _userEditModelValidator.EditionValidation(id, user);
 
         var userEntity = _mapper.Map<User>(user);
 

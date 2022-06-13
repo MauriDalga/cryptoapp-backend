@@ -9,7 +9,7 @@ namespace SessionInterface
     {
         bool IsValidAuthorizationHeaderFormat(string authorizationHeader);
 
-        bool AuthenticateUser(string authorizationHeader, string? id);
+        bool AuthenticateUser(string authorizationHeader, string? id, string? queryUserId);
 
         UserLogged? GetUserLogged();
     }

@@ -11,6 +11,9 @@ namespace WebApi.Filters
         public void OnAuthorization(AuthorizationFilterContext context)
         {
             var routeId = Regex.Match(context.HttpContext.Request.Path, @"\d+").Value;
+            var queryUserId = context.HttpContext.Request.QueryString.Value != null
+                ? Regex.Match(context.HttpContext.Request.QueryString.Value, @"\d+").Value
+                : null;
             string authorizationHeader = context.HttpContext.Request.Headers["Authorization"];
 
             if (string.IsNullOrEmpty(authorizationHeader))
@@ -39,7 +42,7 @@ namespace WebApi.Filters
                 }
                 else
                 {
-                    var isValidAuthentication = sessionLogic.AuthenticateUser(authorizationHeader, routeId);
+                    var isValidAuthentication = sessionLogic.AuthenticateUser(authorizationHeader, routeId, queryUserId);
 
                     if (!isValidAuthentication)
                     {

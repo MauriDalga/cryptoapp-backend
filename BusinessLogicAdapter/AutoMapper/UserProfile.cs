@@ -10,6 +10,7 @@ public class UserProfile : Profile
     public UserProfile()
     {
         FromUserModelToUser();
+        FromUserEditModelToUser();
         FromUserToUserBasicModel();
         FromUserToUserDetailInfoModel();
     }
@@ -17,6 +18,11 @@ public class UserProfile : Profile
     private void FromUserModelToUser()
     {
         CreateMap<UserModel, User>();
+    }
+
+    private void FromUserEditModelToUser()
+    {
+        CreateMap<UserEditModel, User>();
     }
 
     private void FromUserToUserBasicModel()

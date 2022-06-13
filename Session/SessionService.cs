@@ -13,9 +13,9 @@ namespace Session
             _sessionLogicAdapter = sessionLogicAdapter;
         }
 
-        public bool AuthenticateUser(string authorizationHeader, string? id)
+        public bool AuthenticateUser(string authorizationHeader, string? id, string? queryUserId)
         {
-            return _sessionLogicAdapter.IsValidToken(authorizationHeader, id);
+            return _sessionLogicAdapter.IsValidToken(authorizationHeader, id, queryUserId);
         }
 
         public UserLogged? GetUserLogged()
