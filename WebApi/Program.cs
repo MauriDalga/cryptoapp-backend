@@ -42,7 +42,7 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    app.Run("https://0.0.0.0:8080");
+    app.Run("https://0.0.0.0:7088");
 }
 
 public partial class Program { }
