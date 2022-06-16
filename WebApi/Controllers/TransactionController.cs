@@ -1,6 +1,7 @@
 ﻿using BusinessLogicAdapter;
 using Microsoft.AspNetCore.Mvc;
 using Model.Write;
+using ServicesInterface;
 using WebApi.Filters;
 using WebApi.QueryModels;
 
@@ -47,11 +48,11 @@ namespace WebApi.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult Post([FromBody] TransactionModel transaction)
+        public async Task<IActionResult> Post([FromBody] TransactionModel transaction)
         {
             try
             {
-                _transactionLogicAdapter.Create(transaction);
+                await _transactionLogicAdapter.Create(transaction);
                 return NoContent();
             }
             catch (ArgumentException err)

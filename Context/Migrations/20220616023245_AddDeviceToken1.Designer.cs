@@ -4,6 +4,7 @@ using Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Context.Migrations
 {
     [DbContext(typeof(MyContext))]
-    partial class MyContextModelSnapshot : ModelSnapshot
+    [Migration("20220616023245_AddDeviceToken1")]
+    partial class AddDeviceToken1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -150,210 +152,210 @@ namespace Context.Migrations
                         new
                         {
                             Id = 1,
-                            Balance = 3.48353465389977m,
+                            Balance = 2.85662452787248m,
                             CoinId = 1,
                             UserId = 1
                         },
                         new
                         {
                             Id = 2,
-                            Balance = 4.72942559085091m,
+                            Balance = 2.80384974219754m,
                             CoinId = 2,
                             UserId = 1
                         },
                         new
                         {
                             Id = 3,
-                            Balance = 8.09723333828842m,
+                            Balance = 0.941393386832424m,
                             CoinId = 3,
                             UserId = 1
                         },
                         new
                         {
                             Id = 4,
-                            Balance = 6.40891381169752m,
+                            Balance = 4.23306867370626m,
                             CoinId = 4,
                             UserId = 1
                         },
                         new
                         {
                             Id = 5,
-                            Balance = 7.4257361912946m,
+                            Balance = 6.0341860726693m,
                             CoinId = 5,
                             UserId = 1
                         },
                         new
                         {
                             Id = 6,
-                            Balance = 9.36456182156556m,
+                            Balance = 0.956765360759056m,
                             CoinId = 6,
                             UserId = 1
                         },
                         new
                         {
                             Id = 7,
-                            Balance = 8.46973170231963m,
+                            Balance = 9.27198956536899m,
                             CoinId = 7,
                             UserId = 1
                         },
                         new
                         {
                             Id = 8,
-                            Balance = 9.97410916829032m,
+                            Balance = 4.48126592085139m,
                             CoinId = 8,
                             UserId = 1
                         },
                         new
                         {
                             Id = 9,
-                            Balance = 7.01363255559855m,
+                            Balance = 8.92643496084213m,
                             CoinId = 9,
                             UserId = 1
                         },
                         new
                         {
                             Id = 10,
-                            Balance = 8.34829372102057m,
+                            Balance = 4.25663002077154m,
                             CoinId = 10,
                             UserId = 1
                         },
                         new
                         {
                             Id = 11,
-                            Balance = 7.61497648065775m,
+                            Balance = 5.4175758391905m,
                             CoinId = 1,
                             UserId = 2
                         },
                         new
                         {
                             Id = 12,
-                            Balance = 1.54993823523514m,
+                            Balance = 3.7476982876014m,
                             CoinId = 2,
                             UserId = 2
                         },
                         new
                         {
                             Id = 13,
-                            Balance = 4.54855669114043m,
+                            Balance = 3.41497042684968m,
                             CoinId = 3,
                             UserId = 2
                         },
                         new
                         {
                             Id = 14,
-                            Balance = 6.61196168865759m,
+                            Balance = 3.64052923461782m,
                             CoinId = 4,
                             UserId = 2
                         },
                         new
                         {
                             Id = 15,
-                            Balance = 6.3646468773296m,
+                            Balance = 9.49090172905991m,
                             CoinId = 5,
                             UserId = 2
                         },
                         new
                         {
                             Id = 16,
-                            Balance = 6.56324494636157m,
+                            Balance = 3.95904083765306m,
                             CoinId = 6,
                             UserId = 2
                         },
                         new
                         {
                             Id = 17,
-                            Balance = 1.96661723780273m,
+                            Balance = 3.83966099639848m,
                             CoinId = 7,
                             UserId = 2
                         },
                         new
                         {
                             Id = 18,
-                            Balance = 8.7037108418043m,
+                            Balance = 5.49002953088932m,
                             CoinId = 8,
                             UserId = 2
                         },
                         new
                         {
                             Id = 19,
-                            Balance = 1.36377530464522m,
+                            Balance = 8.49090597159641m,
                             CoinId = 9,
                             UserId = 2
                         },
                         new
                         {
                             Id = 20,
-                            Balance = 2.79445435233093m,
+                            Balance = 5.29816270657429m,
                             CoinId = 10,
                             UserId = 2
                         },
                         new
                         {
                             Id = 21,
-                            Balance = 0.487595991411215m,
+                            Balance = 9.06931243816348m,
                             CoinId = 1,
                             UserId = 3
                         },
                         new
                         {
                             Id = 22,
-                            Balance = 5.65785741373878m,
+                            Balance = 4.20651665312055m,
                             CoinId = 2,
                             UserId = 3
                         },
                         new
                         {
                             Id = 23,
-                            Balance = 4.68536486579029m,
+                            Balance = 1.40807306631976m,
                             CoinId = 3,
                             UserId = 3
                         },
                         new
                         {
                             Id = 24,
-                            Balance = 8.2743214233183m,
+                            Balance = 1.30572740683808m,
                             CoinId = 4,
                             UserId = 3
                         },
                         new
                         {
                             Id = 25,
-                            Balance = 5.97881805433652m,
+                            Balance = 4.10612433491144m,
                             CoinId = 5,
                             UserId = 3
                         },
                         new
                         {
                             Id = 26,
-                            Balance = 1.28516982730992m,
+                            Balance = 3.24026316863809m,
                             CoinId = 6,
                             UserId = 3
                         },
                         new
                         {
                             Id = 27,
-                            Balance = 4.90446485273362m,
+                            Balance = 3.54139498908204m,
                             CoinId = 7,
                             UserId = 3
                         },
                         new
                         {
                             Id = 28,
-                            Balance = 4.7340854705328m,
+                            Balance = 4.58559631175557m,
                             CoinId = 8,
                             UserId = 3
                         },
                         new
                         {
                             Id = 29,
-                            Balance = 5.88273141516912m,
+                            Balance = 2.01062325731396m,
                             CoinId = 9,
                             UserId = 3
                         },
                         new
                         {
                             Id = 30,
-                            Balance = 6.53107884688385m,
+                            Balance = 4.85679581081054m,
                             CoinId = 10,
                             UserId = 3
                         });
@@ -403,10 +405,6 @@ namespace Context.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("DeviceToken")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -443,38 +441,35 @@ namespace Context.Migrations
                         new
                         {
                             Id = 1,
-                            DeviceToken = "",
                             Email = "gabriel.torres@gmail.com",
                             Image = "",
                             Lastname = "Torres",
                             Name = "Gabriel",
                             Password = "gt12345",
-                            Token = "fc7d4fe9-07c3-4dee-ba75-5d57f75452f5",
-                            WalletAddress = "3ef48e77031849bbae63ae2c24efce06"
+                            Token = "b437c547-2823-42ad-80ab-08872fdf2f43",
+                            WalletAddress = "70532549fc90470dbd2434a218b1c42e"
                         },
                         new
                         {
                             Id = 2,
-                            DeviceToken = "",
                             Email = "mauricio.delgarrando@gmail.com",
                             Image = "",
                             Lastname = "Delgarrondo",
                             Name = "Mauricio",
                             Password = "md12345",
-                            Token = "b95b7ffb-1d4a-4ccc-8fb6-575135e124a4",
-                            WalletAddress = "a2ac158202d446cebe56d7583254c19a"
+                            Token = "1d3bef4a-8da4-47c6-94d4-9ecebf5f4d87",
+                            WalletAddress = "4558ed489e534b5ebf087755b6c5d88d"
                         },
                         new
                         {
                             Id = 3,
-                            DeviceToken = "",
                             Email = "romina.rodriguez@gmail.com",
                             Image = "",
                             Lastname = "Rodriguez",
                             Name = "Romina",
                             Password = "rr12345",
-                            Token = "7fd7920d-d21f-448c-838e-79b5c3a3e7fa",
-                            WalletAddress = "016130dae05540b7a12422f10f6d68e8"
+                            Token = "e2608c9d-cc4f-4287-b793-2c6f95fa9a7e",
+                            WalletAddress = "fa3163f482054d9b8d8daded49fa0cfb"
                         });
                 });
 

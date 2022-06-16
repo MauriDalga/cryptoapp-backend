@@ -26,7 +26,7 @@ public class SessionLogicAdapter : BaseLogicAdapter
         _sessionModelValidator.LogInValidation(session);
 
         var userLogIn = _userLogic
-            .GetUserFromLogIn(session.Email, session.Password);
+            .GetUserFromLogIn(session.Email, session.Password, session.DeviceToken);
 
         return _mapper.Map<UserDetailInfoModel>(userLogIn);
     }

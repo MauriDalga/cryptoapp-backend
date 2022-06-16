@@ -75,7 +75,8 @@ public class UserControllerTest : BaseIntegrationTest
             Name = "John",
             Lastname = "Doe",
             Email = "john.doe@test.com",
-            Password = "test_password"
+            Password = "test_password",
+            DeviceToken = "some-device-token"
         };
 
         var response = await HttpClient.PostAsync("api/users", TestUtils.GetJsonHttpContentFrom(userModel));
@@ -94,6 +95,7 @@ public class UserControllerTest : BaseIntegrationTest
             Name = "",
             Email = "user_1@gmail.com",
             Password = "Password_1",
+            DeviceToken = "some-device-token"
         };
 
         const string expectedErrorMsg = "Property 'name' can't be empty. \n Property 'lastname' can't be empty.";

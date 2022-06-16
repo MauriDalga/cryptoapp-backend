@@ -1,3 +1,4 @@
+using CorePush.Google;
 using Factory;
 using Newtonsoft.Json;
 using WebApi.Filters;
@@ -15,10 +16,11 @@ builder.Services.AddControllers(options =>
         new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver();
     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
 });
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddHttpClient<FcmSender>();
 
 DotNetEnv.Env.Load("./Environment/.env");
 

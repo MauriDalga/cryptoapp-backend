@@ -35,6 +35,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessLogicValidator.Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi.Tests", "WebApi.Tests\WebApi.Tests.csproj", "{399FFAAF-788A-4DF8-A719-4C9D2EAADE86}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServicesInterface", "ServicesInterface\ServicesInterface.csproj", "{574D6A17-F992-4686-8A7E-A771AE8B19E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{612A8B59-E316-4A00-8AF7-E616D9689F01}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -108,5 +112,13 @@ Global
 		{399FFAAF-788A-4DF8-A719-4C9D2EAADE86}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{399FFAAF-788A-4DF8-A719-4C9D2EAADE86}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{399FFAAF-788A-4DF8-A719-4C9D2EAADE86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{574D6A17-F992-4686-8A7E-A771AE8B19E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{574D6A17-F992-4686-8A7E-A771AE8B19E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{574D6A17-F992-4686-8A7E-A771AE8B19E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{574D6A17-F992-4686-8A7E-A771AE8B19E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{612A8B59-E316-4A00-8AF7-E616D9689F01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{612A8B59-E316-4A00-8AF7-E616D9689F01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{612A8B59-E316-4A00-8AF7-E616D9689F01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{612A8B59-E316-4A00-8AF7-E616D9689F01}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

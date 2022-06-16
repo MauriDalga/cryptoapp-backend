@@ -157,10 +157,10 @@ namespace BusinessLogic.Tests
         public void GetUserFromLogIn()
         {
             _userValidatorMock.Setup(m => m.ValidateEmailPassword("john.doe@test.com", "some_password"));
-            _userRepositoryMock.Setup(m => m.Get(It.IsAny<Expression<Func<User, bool>>>(), null, null, false))
-                .Returns(_user);
+            _userRepositoryMock.Setup(m => m.Get(It.IsAny<Expression<Func<User, bool>>>(), null, null, false)).Returns(_user);
+            _userRepositoryMock.Setup(m => m.UpdateAndSave(_user));
 
-            var returnedUserFromLogin = _userLogic.GetUserFromLogIn("john.doe@test.com", "some_password");
+            var returnedUserFromLogin = _userLogic.GetUserFromLogIn("john.doe@test.com", "some_password", "some-device-token");
 
             _userValidatorMock.VerifyAll();
             _userRepositoryMock.VerifyAll();

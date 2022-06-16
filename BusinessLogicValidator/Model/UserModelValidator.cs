@@ -21,5 +21,9 @@ public class UserModelValidator : BaseValidator<UserModel>
         RuleFor(user => user.Password)
         .MinimumLength(7)
         .WithMessage("Property 'password' should have 7 characters or more.");
+
+        RuleFor(user => user.DeviceToken)
+        .NotEmpty()
+        .WithMessage("Property 'device token' can't be empty.");
     }
 }

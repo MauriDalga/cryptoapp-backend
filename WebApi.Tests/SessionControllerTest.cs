@@ -47,7 +47,8 @@ public class SessionControllerTest : BaseIntegrationTest
         SessionModel sessionModel = new()
         {
             Email = "john.doe@test.com",
-            Password = "test_password"
+            Password = "test_password",
+            DeviceToken = "some-device-token"
         };
 
         var response = await HttpClient.PostAsync("api/login", TestUtils.GetJsonHttpContentFrom(sessionModel));
@@ -68,7 +69,8 @@ public class SessionControllerTest : BaseIntegrationTest
         SessionModel sessionModel = new()
         {
             Email = "john.doe@test.com",
-            Password = "test_wrong_password"
+            Password = "test_wrong_password",
+            DeviceToken = "some-device-token"
         };
         const string expectedErrorMsg = "Invalid credentials.";
 

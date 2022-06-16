@@ -44,7 +44,9 @@ public class TransactionControllerTest : BaseIntegrationTest
         Email = "doe.john@test.com",
         Password = "test_password",
         Token = "0987-6543-21",
-        WalletAddress = "0987654321"
+        WalletAddress = "0987654321",
+        DeviceToken =
+            "dgzCdOKlQzC3PZgDcRG___:APA91bG3fJ2tKX0MiDiy2ELE2Lzbx7-_muAKN4TSKRHKRRaQekkhyMUTBbLiVsVMwn-HhxgdXomX1q81iFX5GNfBhU1WqYSld-bjcIfiMCMtppRFHC0jz3dmQY0tEST1wODQlXcr0zQK"
     };
 
     public TransactionControllerTest(TestingWebAppFactory<Program> factory) : base(factory)
