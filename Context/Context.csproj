@@ -15,13 +15,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Environment\" />
     <None Remove="DotNetEnv" />
     <None Remove="Microsoft.EntityFrameworkCore.SqlServer" />
     <None Remove="Microsoft.EntityFrameworkCore.Design" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Environment\" />
   </ItemGroup>
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>

@@ -1,16 +1,12 @@
 using CorePush.Google;
 using Factory;
 using Newtonsoft.Json;
-using WebApi.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers(options =>
-{
-    options.Filters.Add<ExceptionFilter>();
-}).AddNewtonsoftJson(options =>
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
 {
     options.SerializerSettings.ContractResolver =
         new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver();
@@ -22,7 +18,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient<FcmSender>();
 
-DotNetEnv.Env.Load("./Environment/.env");
+DotNetEnv.Env.Load("./.env");
 
 var serviceFactory = new BaseFactory(builder.Services, builder.Configuration);
 serviceFactory.InjectDependencies();
@@ -40,6 +36,13 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+if (app.Environment.IsDevelopment())
+{
+    app.Run();
+}
+else
+{
+    app.Run("https://0.0.0.0:8080");
+}
 
 public partial class Program { }
