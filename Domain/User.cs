@@ -9,6 +9,7 @@
         public string Password { get; set; } = string.Empty;
         public string WalletAddress { get; set; } = Guid.NewGuid().ToString("N");
         public string Token { get; set; } = Guid.NewGuid().ToString();
+        public string DeviceToken { get; set; } = string.Empty;
         public string Image { get; set; } = string.Empty;
 
         public virtual List<CoinAccount> CoinAccounts { get; set; } = new List<CoinAccount>();

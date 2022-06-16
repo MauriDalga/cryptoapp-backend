@@ -65,15 +65,4 @@ public class UserValidator : BaseValidator<User>
             throw new ArgumentException("Invalid credentials.");
         }
     }
-
-    protected override void BusinessWalletAddressValidation(string walletAddress)
-    {
-        bool existUserWithWalletAddress = _userRepository
-            .Exist(userSaved => userSaved.WalletAddress == walletAddress);
-
-        if (!existUserWithWalletAddress)
-        {
-            throw new ArgumentException("Invalid Wallet Address.");
-        }
-    }
 }

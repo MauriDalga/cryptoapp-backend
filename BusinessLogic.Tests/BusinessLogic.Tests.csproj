@@ -11,6 +11,7 @@
     <ProjectReference Include="..\DataAccessInterface\DataAccessInterface.csproj" />
     <ProjectReference Include="..\Domain\Domain.csproj" />
     <ProjectReference Include="..\BusinessLogicValidatorInterface\BusinessLogicValidatorInterface.csproj" />
+    <ProjectReference Include="..\SessionInterface\SessionInterface.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Moq" />

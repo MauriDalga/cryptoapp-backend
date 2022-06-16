@@ -32,7 +32,6 @@ public class UserLogic : BaseLogic
     public User Add(User user)
     {
         _userValidator.CreationValidation(user);
-
         _userRepository.InsertAndSave(user);
 
         // Mocking UserAccounts for testing purpose.
@@ -110,19 +109,16 @@ public class UserLogic : BaseLogic
         return _userRepository.Exist(users => users.Id == userId && users.Token == token);
     }
 
-    public User GetUserFromLogIn(string email, string password)
+    public User GetUserFromLogIn(string email, string password, string deviceToken)
     {
         _userValidator.ValidateEmailPassword(email, password);
 
-        return _userRepository.Get(
-            users => users.Email == email && users.Password == password
-            );
-    }
+        User user = _userRepository.Get(
+            users => users.Email == email && users.Password == password);
 
-    public User GetUserFromWalletAddress(string walletAddress)
-    {
-        _userValidator.ValidateWalletAddress(walletAddress);
+        user.DeviceToken = deviceToken;
+        _userRepository.UpdateAndSave(user);
 
-        return _userRepository.Get(users => users.WalletAddress == walletAddress);
+        return user;
     }
 }

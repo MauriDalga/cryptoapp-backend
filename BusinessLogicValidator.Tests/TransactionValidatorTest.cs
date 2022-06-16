@@ -471,6 +471,69 @@ namespace BusinessLogicValidator.Tests
 
             Assert.IsFalse(transactionValidator.CheckFunds(transaction));
         }
+
+        [TestMethod]
+        public void ValidateWalletAddressOk()
+        {
+            var transactionRepositoryMock = new Mock<IRepository<Transaction>>(MockBehavior.Strict);
+            var transactionUnitOfWorkMock = new Mock<IUnitOfWork>(MockBehavior.Strict);
+            transactionUnitOfWorkMock.Setup(m => m.GetRepository<Transaction>()).Returns(transactionRepositoryMock.Object);
+
+            var userRepositoryMock = new Mock<IRepository<User>>(MockBehavior.Strict);
+            userRepositoryMock.Setup(m => m.Exist(It.IsAny<Expression<Func<User, bool>>>())).Returns(true);
+
+            var coinRepositoryMock = new Mock<IRepository<Coin>>(MockBehavior.Strict);
+            coinRepositoryMock.Setup(m => m.Exist(It.IsAny<Expression<Func<Coin, bool>>>())).Returns(true);
+
+
+            var coinAccountRepositoryMock = new Mock<IRepository<CoinAccount>>(MockBehavior.Strict);
+            coinAccountRepositoryMock
+                .Setup(m => m.Get(It.IsAny<Expression<Func<CoinAccount, bool>>>(), null, null, false)).Returns(coinAccount);
+
+            transactionUnitOfWorkMock.Setup(m => m.GetRepository<Coin>()).Returns(coinRepositoryMock.Object);
+            transactionUnitOfWorkMock.Setup(m => m.GetRepository<User>()).Returns(userRepositoryMock.Object);
+            transactionUnitOfWorkMock.Setup(m => m.GetRepository<CoinAccount>()).Returns(coinAccountRepositoryMock.Object);
+
+            TransactionValidator transactionValidator = new(transactionUnitOfWorkMock.Object);
+            transactionValidator.ValidateWalletAddress("some-wallet-address");
+        }
+
+        [TestMethod]
+        public void ValidateWalletAddressNotExisting()
+        {
+            var transactionRepositoryMock = new Mock<IRepository<Transaction>>(MockBehavior.Strict);
+            var transactionUnitOfWorkMock = new Mock<IUnitOfWork>(MockBehavior.Strict);
+            transactionUnitOfWorkMock.Setup(m => m.GetRepository<Transaction>()).Returns(transactionRepositoryMock.Object);
+
+            var userRepositoryMock = new Mock<IRepository<User>>(MockBehavior.Strict);
+            userRepositoryMock.Setup(m => m.Exist(It.IsAny<Expression<Func<User, bool>>>())).Returns(false);
+
+            var coinRepositoryMock = new Mock<IRepository<Coin>>(MockBehavior.Strict);
+            coinRepositoryMock.Setup(m => m.Exist(It.IsAny<Expression<Func<Coin, bool>>>())).Returns(true);
+
+
+            var coinAccountRepositoryMock = new Mock<IRepository<CoinAccount>>(MockBehavior.Strict);
+            coinAccountRepositoryMock
+                .Setup(m => m.Get(It.IsAny<Expression<Func<CoinAccount, bool>>>(), null, null, false)).Returns(coinAccount);
+
+            transactionUnitOfWorkMock.Setup(m => m.GetRepository<Coin>()).Returns(coinRepositoryMock.Object);
+            transactionUnitOfWorkMock.Setup(m => m.GetRepository<User>()).Returns(userRepositoryMock.Object);
+            transactionUnitOfWorkMock.Setup(m => m.GetRepository<CoinAccount>()).Returns(coinAccountRepositoryMock.Object);
+
+            TransactionValidator transactionValidator = new(transactionUnitOfWorkMock.Object);
+
+            string errorMessage = "";
+            try
+            {
+                transactionValidator.ValidateWalletAddress("some-wallet-address");
+            }
+            catch (ArgumentException exception)
+            {
+                errorMessage = exception.Message;
+            }
+
+            Assert.AreEqual("Invalid Wallet Address.", errorMessage);
+        }
     }
 }
 

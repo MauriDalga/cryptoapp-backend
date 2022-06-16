@@ -65,4 +65,15 @@ public class TransactionValidator : BaseValidator<Transaction>
 
         return senderAccount.Balance - transaction.Amount >= 0;
     }
+
+    protected override void BusinessWalletAddressValidation(string walletAddress)
+    {
+        bool existUserWithWalletAddress = _userRepository
+            .Exist(userSaved => userSaved.WalletAddress == walletAddress);
+
+        if (!existUserWithWalletAddress)
+        {
+            throw new ArgumentException("Invalid Wallet Address.");
+        }
+    }
 }

@@ -7,6 +7,7 @@ public class TransactionBasicModel
     public decimal Amount { get; set; }
     public int SenderId { get; set; }
     public int ReceiverId { get; set; }
+    public string WalletAddress { get; set; }
     public DateTime Date { get; set; }
     public CoinBasicModel Coin { get; set; }
 
@@ -16,6 +17,7 @@ public class TransactionBasicModel
         Amount = transaction.Amount;
         SenderId = transaction.SenderId;
         ReceiverId = transaction.ReceiverId;
+        WalletAddress = transaction.WalletAddress;
         Date = transaction.Date;
         Coin = transaction.Coin != null
             ? new CoinBasicModel(transaction.Coin)

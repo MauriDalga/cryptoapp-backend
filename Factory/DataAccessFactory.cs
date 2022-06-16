@@ -1,13 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Context;
 using DataAccess;
 using DataAccessInterface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 namespace Factory;
 internal static class DataAccessFactory
@@ -20,6 +15,7 @@ internal static class DataAccessFactory
         {
             options.UseSqlServer(connectionString);
         });
+
         services.AddTransient<IUnitOfWork, UnitOfWork>();
     }
 }
