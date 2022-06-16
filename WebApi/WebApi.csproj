@@ -23,7 +23,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Environment\" />
     <None Remove="DotNetEnv" />
     <None Remove="Newtonsoft.Json" />
     <None Remove="Microsoft.AspNetCore.Mvc.NewtonsoftJson" />
@@ -31,13 +30,6 @@
     <None Remove="CorePush" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Environment\" />
     <Folder Include="QueryModels\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Remove="private_key.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="private_key.json" />
   </ItemGroup>
 </Project>
