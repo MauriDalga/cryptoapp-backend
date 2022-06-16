@@ -1,8 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using SessionInterface;
@@ -13,6 +10,10 @@ namespace WebApi.Filters
     {
         public void OnAuthorization(AuthorizationFilterContext context)
         {
+            var routeId = Regex.Match(context.HttpContext.Request.Path, @"\d+").Value;
+            var queryUserId = context.HttpContext.Request.QueryString.Value != null
+                ? Regex.Match(context.HttpContext.Request.QueryString.Value, @"\d+").Value
+                : null;
             string authorizationHeader = context.HttpContext.Request.Headers["Authorization"];
 
             if (string.IsNullOrEmpty(authorizationHeader))
@@ -20,7 +21,7 @@ namespace WebApi.Filters
                 context.Result = new ObjectResult(
                     new
                     {
-                        Message = "Incorrect format of header 'Authorization'",
+                        Message = "Incorrect format of header 'Authorization'.",
                     })
                 {
                     StatusCode = (int)HttpStatusCode.Forbidden,
@@ -28,7 +29,7 @@ namespace WebApi.Filters
             }
             else
             {
-                var sessionLogic = base.GetService<ISessionService>(context);
+                var sessionLogic = GetService<ISessionService>(context);
                 var isValidAuthorization = sessionLogic.IsValidAuthorizationHeaderFormat(authorizationHeader);
 
                 if (!isValidAuthorization)
@@ -36,19 +37,19 @@ namespace WebApi.Filters
                     context.Result = new UnauthorizedObjectResult(
                     new
                     {
-                        Message = "Incorrect format of header 'Authorization'",
+                        Message = "Incorrect format of header 'Authorization'.",
                     });
                 }
                 else
                 {
-                    var isValidAuthentication = sessionLogic.AuthenticateAndSaveUser(authorizationHeader);
+                    var isValidAuthentication = sessionLogic.AuthenticateUser(authorizationHeader, routeId, queryUserId);
 
                     if (!isValidAuthentication)
                     {
                         context.Result = new UnauthorizedObjectResult(
                         new
                         {
-                            Message = "Header 'Authorization' expired",
+                            Message = "Header 'Authorization' expired or invalid.",
                         });
                     }
                 }

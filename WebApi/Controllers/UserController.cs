@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using BusinessLogicAdapter;
+﻿using BusinessLogicAdapter;
 using Microsoft.AspNetCore.Mvc;
+using Model.Read;
 using Model.Write;
 using WebApi.Filters;
 
-[assembly: ApiController]
 namespace WebApi.Controllers
 {
-    [Route("users")]
-    //[AuthenticationFilter]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [Route("api/users")]
     public class UserController : Controller
     {
         private readonly UserLogicAdapter _userLogicAdapter;
@@ -22,6 +16,7 @@ namespace WebApi.Controllers
             _userLogicAdapter = userLogicAdapter;
         }
 
+        [AuthenticationFilter]
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -32,21 +27,13 @@ namespace WebApi.Controllers
                 _userLogicAdapter.Delete(id);
                 return NoContent();
             }
-            catch (ArgumentException)
+            catch (KeyNotFoundException err)
             {
-                return NotFound();
+                return NotFound(err.Message);
             }
         }
 
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult Get()
-        {
-            var users = _userLogicAdapter.GetCollection();
-
-            return Ok(users);
-        }
-
+        [AuthenticationFilter]
         [HttpGet("{id}", Name = "GetUserById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -54,11 +41,15 @@ namespace WebApi.Controllers
         {
             try
             {
-                var user = _userLogicAdapter.Get(id);
+                UserDetailInfoModel user = _userLogicAdapter.Get(id);
 
                 return Ok(user);
             }
             catch (ArgumentException err)
+            {
+                return BadRequest(err.Message);
+            }
+            catch (KeyNotFoundException err)
             {
                 return NotFound(err.Message);
             }
@@ -67,11 +58,11 @@ namespace WebApi.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult Post(UserModel user)
+        public IActionResult Post([FromBody] UserModel user)
         {
             try
             {
-                var userCreated = _userLogicAdapter.Create(user);
+                UserDetailInfoModel userCreated = _userLogicAdapter.Create(user);
             
                 return CreatedAtRoute("GetUserById", new { id = userCreated.Id }, userCreated);
             }
@@ -81,11 +72,12 @@ namespace WebApi.Controllers
             }
         }
 
+        [AuthenticationFilter]
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult Put([FromRoute] int id, [FromBody] UserModel user)
+        public IActionResult Put([FromRoute] int id, [FromBody] UserEditModel user)
         {
             try
             {
@@ -93,11 +85,11 @@ namespace WebApi.Controllers
 
                 return NoContent();
             }
-            catch (ArgumentException err)
+            catch (KeyNotFoundException err)
             {
                 return NotFound(err.Message);
             }
-            catch (Exception err)
+            catch (ArgumentException err)
             {
                 return BadRequest(err.Message);
             }

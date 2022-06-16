@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace SessionInterface
+﻿namespace SessionInterface
 {
     public interface ISessionService
     {
         bool IsValidAuthorizationHeaderFormat(string authorizationHeader);
 
-        bool AuthenticateAndSaveUser(string authorizationHeader);
+        bool AuthenticateUser(string authorizationHeader, string? id, string? queryUserId);
 
         UserLogged? GetUserLogged();
     }

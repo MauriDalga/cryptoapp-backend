@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using DataAccessInterface;
+﻿using DataAccessInterface;
 using Domain;
 using FluentValidation;
 
@@ -16,22 +12,16 @@ public class UserValidator : BaseValidator<User>
         _userRepository = unitOfWork.GetRepository<User>();
 
         RuleFor(user => user.Name)
-        .NotNull()
-        .WithMessage("Property 'name' can't be null")
         .NotEmpty()
         .WithMessage("Property 'name' can't be empty.");
 
         RuleFor(user => user.Lastname)
-        .NotNull()
-        .WithMessage("Property 'lastname' can't be null")
         .NotEmpty()
         .WithMessage("Property 'lastname' can't be empty.");
 
         RuleFor(user => user.Email)
-        .NotNull()
-        .WithMessage("Property 'email' can't be null")
-        .NotEmpty()
-        .WithMessage("Property 'email' can't be empty.");
+        .EmailAddress()
+        .WithMessage("Property 'email' has incorrect format.");
     }
 
 
@@ -41,7 +31,7 @@ public class UserValidator : BaseValidator<User>
 
         if (existUserWithThatEmail)
         {
-            throw new ArgumentException($"Email: {user.Email} is in use");
+            throw new ArgumentException($"Email: {user.Email} is already in use.");
         }
     }
 
@@ -51,7 +41,7 @@ public class UserValidator : BaseValidator<User>
 
         if (existingUser.Email != user.Email)
         {
-            throw new Exception("Email must remain the same");
+            throw new Exception("Email must remain the same.");
         }
     }
 
@@ -61,7 +51,18 @@ public class UserValidator : BaseValidator<User>
 
         if (!existUserWithThatId)
         {
-            throw new ArgumentException($"ID: {id} not found");
+            throw new KeyNotFoundException($"ID: {id} not found.");
+        }
+    }
+
+    protected override void BusinessLogInValidation(string email, string password)
+    {
+        bool existUserWithThatEmailAndPassword = _userRepository
+            .Exist(userSaved => userSaved.Email == email && userSaved.Password == password);
+
+        if (!existUserWithThatEmailAndPassword)
+        {
+            throw new ArgumentException("Invalid credentials.");
         }
     }
 }

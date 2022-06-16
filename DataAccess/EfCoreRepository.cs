@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using System.Reflection;
 using DataAccess.Extensions;
 using DataAccessInterface;
@@ -9,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 
 namespace DataAccess;
+
 public class EfCoreRepository<T> : IRepository<T> where T : class
 {
     private readonly DbContext _context;
@@ -36,7 +34,8 @@ public class EfCoreRepository<T> : IRepository<T> where T : class
         Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
         bool track = false)
     {
-        return _elements.TrackElements(track).Where(condition).NullableInclude(include).NullableSelect(selector).First();
+        return _elements.TrackElements(track).Where(condition).NullableInclude(include).NullableSelect(selector)
+            .First();
     }
 
     public void InsertAndSave(T entity)
@@ -73,12 +72,13 @@ public class EfCoreRepository<T> : IRepository<T> where T : class
     }
 
     public IEnumerable<T> GetCollection(
-        Expression<Func<T, bool>> condition = null,
-        Expression<Func<T, T>> selector = null,
-        Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
-        Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null)
+        Expression<Func<T, bool>>? condition = null,
+        Expression<Func<T, T>>? selector = null,
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+        Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null)
     {
-        var elements = _elements.AsNoTracking().NullableWhere(condition).NullableInclude(include).NullableOrderBy(orderBy).NullableSelect(selector).ToList();
+        var elements = _elements.AsNoTracking().NullableWhere(condition).NullableInclude(include)
+            .NullableOrderBy(orderBy).NullableSelect(selector).ToList();
 
         return elements;
     }
@@ -98,7 +98,7 @@ public class EfCoreRepository<T> : IRepository<T> where T : class
         var entities = new List<T>();
 
         var typeInfo = typeof(T).GetTypeInfo();
-        var key = _context.Model.FindEntityType(typeInfo).FindPrimaryKey().Properties.FirstOrDefault();
+        var key = _context.Model.FindEntityType(typeInfo)?.FindPrimaryKey()?.Properties.FirstOrDefault();
         var property = typeInfo.GetProperty(key?.Name);
 
         foreach (var id in ids)
@@ -106,10 +106,8 @@ public class EfCoreRepository<T> : IRepository<T> where T : class
             T entity;
             if (property != null)
             {
-
                 entity = Activator.CreateInstance<T>();
                 property.SetValue(entity, id);
-
             }
             else
             {

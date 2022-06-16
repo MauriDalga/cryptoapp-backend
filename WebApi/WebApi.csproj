@@ -8,6 +8,11 @@
 
   <ItemGroup>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1" />
+    <PackageReference Include="DotNetEnv" Version="2.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.6" />
+    <PackageReference Include="CorePush" Version="3.0.12" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.6" />
   </ItemGroup>
 
   <ItemGroup>
@@ -17,4 +22,14 @@
     <ProjectReference Include="..\BusinessLogicAdapter\BusinessLogicAdapter.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="DotNetEnv" />
+    <None Remove="Newtonsoft.Json" />
+    <None Remove="Microsoft.AspNetCore.Mvc.NewtonsoftJson" />
+    <None Remove="QueryModels\" />
+    <None Remove="CorePush" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="QueryModels\" />
+  </ItemGroup>
 </Project>

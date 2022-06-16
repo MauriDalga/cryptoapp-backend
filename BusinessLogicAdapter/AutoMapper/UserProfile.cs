@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Domain;
 using Model.Read;
 using Model.Write;
@@ -14,6 +10,7 @@ public class UserProfile : Profile
     public UserProfile()
     {
         FromUserModelToUser();
+        FromUserEditModelToUser();
         FromUserToUserBasicModel();
         FromUserToUserDetailInfoModel();
     }
@@ -21,6 +18,11 @@ public class UserProfile : Profile
     private void FromUserModelToUser()
     {
         CreateMap<UserModel, User>();
+    }
+
+    private void FromUserEditModelToUser()
+    {
+        CreateMap<UserEditModel, User>();
     }
 
     private void FromUserToUserBasicModel()

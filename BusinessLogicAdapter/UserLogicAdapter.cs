@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using BusinessLogic;
 using BusinessLogicValidatorInterface;
 using Domain;
@@ -10,18 +6,22 @@ using Model.Read;
 using Model.Write;
 
 namespace BusinessLogicAdapter;
+
 public class UserLogicAdapter : BaseLogicAdapter
 {
     private readonly UserLogic _userLogic;
     private readonly IBusinessValidator<UserModel> _userModelValidator;
+    private readonly IBusinessValidator<UserEditModel> _userEditModelValidator;
 
     public UserLogicAdapter(
-        UserLogic userLogic, 
+        UserLogic userLogic,
         IBusinessValidator<UserModel> userModelValidator,
-        IMapper mapper) : base (mapper)
+        IBusinessValidator<UserEditModel> userEditModelValidator,
+        IMapper mapper) : base(mapper)
     {
         _userLogic = userLogic;
         _userModelValidator = userModelValidator;
+        _userEditModelValidator = userEditModelValidator;
     }
 
     public UserDetailInfoModel Create(UserModel user)
@@ -42,23 +42,16 @@ public class UserLogicAdapter : BaseLogicAdapter
         _userLogic.Delete(id);
     }
 
-    public void Edit(int id, UserModel user)
+    public void Edit(int id, UserEditModel user)
     {
         _userModelValidator.ValidateIdentifier(id);
-        _userModelValidator.EditionValidation(id, user);
+        _userEditModelValidator.EditionValidation(id, user);
 
         var userEntity = _mapper.Map<User>(user);
 
         userEntity.Id = id;
 
         _userLogic.Edit(id, userEntity);
-    }
-
-    public IEnumerable<UserBasicModel> GetCollection()
-    {
-        var users = _userLogic.GetCollection();
-
-        return _mapper.Map<IEnumerable<UserBasicModel>>(users);
     }
 
     public UserDetailInfoModel Get(int id)

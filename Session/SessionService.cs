@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BusinessLogicAdapter;
 using SessionInterface;
 
 namespace Session
@@ -9,10 +6,16 @@ namespace Session
     public class SessionService : ISessionService
     {
         private readonly UserLogged? _userLogged;
+        private readonly SessionLogicAdapter _sessionLogicAdapter;
 
-        public bool AuthenticateAndSaveUser(string authorizationHeader)
+        public SessionService(SessionLogicAdapter sessionLogicAdapter)
         {
-            throw new NotImplementedException();
+            _sessionLogicAdapter = sessionLogicAdapter;
+        }
+
+        public bool AuthenticateUser(string authorizationHeader, string? id, string? queryUserId)
+        {
+            return _sessionLogicAdapter.IsValidToken(authorizationHeader, id, queryUserId);
         }
 
         public UserLogged? GetUserLogged()
@@ -22,7 +25,7 @@ namespace Session
 
         public bool IsValidAuthorizationHeaderFormat(string authorizationHeader)
         {
-            throw new NotImplementedException();
+            return !string.IsNullOrEmpty(authorizationHeader);
         }
     }
 }
