@@ -58,7 +58,7 @@ CREATE TABLE CryptoAppDB.dbo.CoinAccounts (
 
 CREATE TABLE CryptoAppDB.dbo.Transactions (
 	Id int IDENTITY(1,1) NOT NULL,
-	Amount decimal(18,2) NOT NULL,
+	Amount decimal(30,16) NOT NULL,
 	SenderId int NOT NULL,
 	ReceiverId int NOT NULL,
 	CoinId int NOT NULL,
